@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Editors and OS
+.DS_Store
+.vscode/
+.idea/
+
+# Training outputs and checkpoints (track only deliberately selected, licensed artifacts)
+checkpoints/
+runs/
+mlruns/
+lightning_logs/
+*.ckpt
+*.pt
+*.pth
+*.onnx
+
+# Data and generated outputs: keep restricted/large data out of Git
+data/raw/
+data/processed/
+data/private/
+results/generated/
+*.npy
+*.npz
+*.h5
+*.hdf5
+*.segy
+*.sgy
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example

@@ -1,0 +1,15 @@
+.git
+.venv
+venv
+__pycache__
+.pytest_cache
+.mypy_cache
+.ruff_cache
+data/raw
+data/processed
+data/private
+checkpoints
+runs
+mlruns
+results/generated
+.env

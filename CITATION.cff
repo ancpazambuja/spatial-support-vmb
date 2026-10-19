@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the associated research paper."
+title: "On the Calibration of Spatial Support in Deep Learning-Assisted Velocity Model Building"
+type: software
+# TODO: Replace placeholders and validate this file before release.
+authors:
+  - family-names: "TODO"
+    given-names: "TODO"
+version: 0.1.0
+date-released: "2026-10-19"
+# Add repository-code URL after creating the public repository:
+# repository-code: "https://github.com/OWNER/REPOSITORY"
+# Add the paper DOI after publication:
+# doi: "TODO"
