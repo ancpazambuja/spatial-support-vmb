@@ -1,38 +1,21 @@
-# Installation and computational requirements
+# Installation and Computational Requirements
 
-## Supported environment
+## Supported Environment
 
-**TODO:** State the exact tested container runtime, base image, Python version, ML framework, CUDA/cuDNN versions, and hardware requirements.
+This software project uses docker containers and the environment could be replicated using the configuration files found in spatial-support-vmb/configs directory.
 
-## Build the container
+## Build the Container
 
-After adapting the Dockerfile and dependency specification to the existing package, the intended build command is:
-
-```bash
-docker build -t spatial-support-vmb:0.1.0 .
-```
-
-For Podman, the corresponding command is typically:
+The intended build command is:
 
 ```bash
-podman build -t spatial-support-vmb:0.1.0 .
+cd <path_to_project>/spatial-support-vmb/configs
+podman build -t spatial-support-vmb:1.0.0 Dockerfile 
 ```
-
 These commands are templates; verify them after the Dockerfile has been completed.
 
 ## Run a command
+....
 
-Document the tested command for the synthetic smoke test and for the full research workflow. For GPU execution, document the runtime-specific GPU access options and the required host driver. Do not assume Docker and Podman GPU options are identical across installations.
 
-## Resource requirements
 
-Document separately:
-- minimum resources for the smoke test;
-- recommended resources for training;
-- GPU memory and system RAM for the full experiments;
-- expected runtime, if measured;
-- required disk space for data, checkpoints, and outputs.
-
-## Troubleshooting
-
-Add verified solutions for dependency installation, data paths, GPU visibility, and common runtime errors.

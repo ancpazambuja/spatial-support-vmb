@@ -113,13 +113,13 @@ class LoadDataBaseGlobalVars(BaseGlobalVars):
             self.restart = False
 
         if self.data == 'shallow':
-            self.data_basedir = "/gemini/tg/ntbs/doutorado/5semestre/estudo.orientado/deeptomograph_data/data/"
+            self.data_basedir = "./data/"
             models_mask=[False] * ModelIdx.MAX_MODEL_IDX
             models_mask[ ModelIdx.TRUE_MODEL_IDX] = True
             models_mask[ ModelIdx.HIGHRES_MODEL_IDX] = True
     # NEWER
         else:
-            self.data_basedir = "/gemini/tg/ntbs/doutorado/5semestre/estudo.orientado/deeptomograph_data/data_new_and_bigger/"
+            self.data_basedir = "./data/"
             models_mask=[True] * ModelIdx.MAX_MODEL_IDX
 
         ##############################
