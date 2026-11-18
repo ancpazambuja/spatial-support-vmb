@@ -126,7 +126,7 @@ from src.pdf.eval_utils import EvalUtils as eval_utl
 #from src.processing.train_data import TrainDataInfo, TrainData, Jobs, ProductionOutlierClassification
 
 def get_filtered_df_best_per_kernel(df=None):
-    # 1. Identifica o nome da melhor arquitetura para cada conv_kernel_size
+    # 1. Identifies the name of the best architecture for each conv_kernel_size
     best_archs = (
         df.groupby(['arch_name', 'conv_kernel_size', 'use_transformers'])['mse']
         .mean()
@@ -137,7 +137,7 @@ def get_filtered_df_best_per_kernel(df=None):
     print("-------------------------------")
     print(best_archs)
     print("-------------------------------")
-    # 2. Filtra o DataFrame original mantendo apenas as linhas dessas arquiteturas
+    # 2. Filters the original DataFrame keeping only the rows of those architectures
     return  df[df['arch_name'].isin(best_archs)]
 
 class ShallowUnetFilter():

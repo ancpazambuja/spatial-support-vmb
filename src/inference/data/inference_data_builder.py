@@ -1,6 +1,28 @@
 
 """@package local_data_builder.py
 Building process of data and models from persisted files.
+
+STATUS: WORK IN PROGRESS / TODO
+-------------------------------
+This module is an initiated but INCOMPLETE draft. It is NOT part of the
+reproducible pipeline of the paper yet.
+
+Intended purpose:
+    Build the datasets and the neural network weights needed for the complete
+    deep-tomography inference, which will call the three-iterations pipeline
+    (RTM migration + network velocity-update inference per iteration).
+
+Known gaps:
+    - `InferenceNNWeightsBuilder.builder()` is unfinished: the train/test
+      indexes are not yet obtained from the MLflow run (Ellipsis
+      placeholders).
+    - The private `__read_velocity_data_from_file()` and
+      `__read_migrated_data_from_file()` helpers are missing the `self`
+      parameter, so `builder()` would fail if called.
+    - The returned dataset classes do not yet match the needs of the
+      three-iterations flow (see `src/inference/data/inference_data.py`).
+
+Do not rely on this module until this notice is removed.
 """
 import numpy as np
 from  glob import glob
@@ -113,10 +135,10 @@ class InferenceNNWeightsBuilder:
                             transpose=True
                         )
         # get train and test indexes from run
-        train_indexes = self.mlflow_run...
-        test_indexes = self.mlflow_run...
+        train_indexes = ...  # TODO: not implemented yet (obtain from self.mlflow_run)
+        test_indexes = ...  # TODO: not implemented yet (obtain from self.mlflow_run)
 
-        # input_seismic = self.__read_migrated_data_from_file()elocity model
+        # TODO: decide whether to read the migrated data or the velocity model here.
         return InferenceInputDatasets(seismic_data=input_seismic, input_velocity_model=velmodel_filename, 
                  train_indexes = train_indexes, test_indexes = test_indexes, verbose=self.verbose)
     

@@ -246,15 +246,15 @@ def df2latex(
     if label is not None:
         parts.append(f"See Table \\ref{{{label}}}.\n")
 
-    # --- Ajuste dinâmico do tabularx ---
+    # --- Dynamic adjustment of the tabularx ---
     num_cols = len(columns)
-    col_format = "|" + "X|" * num_cols  # Gera algo como |X|X|X|
+    col_format = "|" + "X|" * num_cols  # Generates something like |X|X|X|
     
     parts.append(r"\begin{table}[h!] ")
     parts.append(r"\begin{tabularx}{\textwidth}{" + col_format + "} ")
     parts.append("\n" + r"\hline" + "\n")
 
-    # Cabeçalho
+    # Header
     header_cells = [r"\textbf{" + c.replace("_", r"\_") + "}" for c in columns_labels]
     parts.append(" & ".join(header_cells) + r" \\ " + "\n")
     parts.append(r"\hline" + "\n")

@@ -34,8 +34,8 @@ class ScoredSkorchModel(NeuralNetRegressor):
 
          
         if training and getattr(iterator, 'shuffle', False):
-            # Recria o gerador travado na semente exata a cada época
-            g = torch.Generator(device='cuda') # Certifique-se de alinhar o device se necessário
+            # Recreates the generator seeded with the exact seed at every epoch
+            g = torch.Generator(device='cuda') # Make sure to align the device if needed
             g.manual_seed(self.seed)
             iterator.generator = g
             

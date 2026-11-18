@@ -517,21 +517,20 @@ class GSGlobalPlots(GSListBase):
         ]
         return sec
 
-
-# graficos globais
-## boxplot para cada grandeza
-## curva para cada grandeza
+# global plots
+## boxplot for each quantity
+## curve for each quantity
 
 # fixed kernel-size
 ## lr
-### boxplot para cada ks
-### curva para cada ks (melhor lr)
+### boxplot for each ks
+### curve for each ks (best lr)
 ## wd
-### boxplot para cada ks
-### curva para cada ks (melhor lr)
+### boxplot for each ks
+### curve for each ks (best lr)
 ## num_layers
-### boxplot para cada ks
-### curva para cada ks (melhor lr)
+### boxplot for each ks
+### curve for each ks (best lr)
 
 # fixed kernel-size and fixed num_layers
 # REPETIR ACIMA

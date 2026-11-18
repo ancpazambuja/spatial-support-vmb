@@ -35,9 +35,13 @@ The quickstart is intended to run without access to the restricted research data
 
 1. Install the supported container runtime (Docker, Podman, or another compatible runtime).
 2. Build the image using the instructions in [Installation](docs/installation.md).
-3. Run the synthetic smoke test described in [Tutorials](docs/tutorials.md).
+3. Run the synthetic smoke test described in [Tutorials](docs/tutorials.md):
 
-**TODO:** Add the verified build/run commands and the actual smoke-test command after adapting this scaffold to the package API.
+```bash
+bash examples/quickstart.sh
+```
+
+The quickstart runs a miniature grid search (U-Net, 1 epoch, 5 samples, CPU) on the data subset included in `data/shallower/`, logging to a local file-based MLflow store. It completes in a few minutes and requires no GPU and no server.
 
 ## Full research reproduction
 
@@ -55,7 +59,11 @@ See [Installation](docs/installation.md). The supported Python, framework, CUDA/
 
 ## Tests
 
-**TODO:** Add and run tests for model construction, expected input/output shapes, preprocessing, metric calculations, and the synthetic example.
+Automated tests are planned (model construction, expected input/output shapes, preprocessing, metric calculations). Until they land, the smoke test doubles as a minimal check:
+
+```bash
+bash examples/quickstart.sh
+```
 
 ## Citation
 

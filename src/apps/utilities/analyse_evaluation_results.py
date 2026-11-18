@@ -127,61 +127,61 @@ from src.pdf.eval_utils import EvalUtils as eval_utl
 #from src.processing.train_data import TrainDataInfo, TrainData, Jobs, ProductionOutlierClassification
 
 def filter_remove_conv_kernel_size_9(df):
-    """Remove linhas onde o modelo é transunet E conv_dilation_size > 1."""
-    # Condição que identifica o que queremos REMOVER
-    condicao_remover = (df['conv_kernel_size'] == 9)
+    """Remove rows where the model is transunet AND conv_dilation_size > 1."""
+    # Condition that identifies what we want to REMOVE
+    remove_condition = (df['conv_kernel_size'] == 9)
     
-    # Mantemos apenas o inverso (~) da condição de remoção
-    return df[~condicao_remover]
+    # Keep only the inverse (~) of the removal condition
+    return df[~remove_condition]
 
 
 def filter_remove_transunet_with_dilation(df):
-    """Remove linhas onde o modelo é transunet E conv_dilation_size > 1."""
-    # Condição que identifica o que queremos REMOVER
-    condicao_transunet = (df['arch_name'].str.contains('transunet', case=False, na=False))
-    condicao_r_gt_1 = (df['conv_dilation_size'] > 1)
-    condicao_remover = condicao_transunet & condicao_r_gt_1
+    """Remove rows where the model is transunet AND conv_dilation_size > 1."""
+    # Condition that identifies what we want to REMOVE
+    transunet_condition = (df['arch_name'].str.contains('transunet', case=False, na=False))
+    r_gt_1_condition = (df['conv_dilation_size'] > 1)
+    remove_condition = transunet_condition & r_gt_1_condition
     
-    # Mantemos apenas o inverso (~) da condição de remoção
-    return df[~condicao_remover]
+    # Keep only the inverse (~) of the removal condition
+    return df[~remove_condition]
 
 
 #def filter_only_dilation_one(df):
-#    """Mantém apenas registros onde conv_dilation_size é igual a 1."""
+#    """Keep only records where conv_dilation_size is equal to 1."""
 #    return df[df['conv_dilation_size'] == 1]
 
 
 def process_dataframes_recursive(d, keep, is_debug, filters=None):
-    """Navega recursivamente aplicando os filtros customizados, drop_duplicates e reset_index."""
+    """Recursively navigate applying the custom filters, drop_duplicates and reset_index."""
     for key, value in d.items():
         if key == "self":
             df_current = value
             
-            # Aplica cada filtro da lista sequencialmente (se houver algum)
+            # Apply each filter in the list sequentially (if any)
             if filters:
                 for filter_func in filters:
                     df_current = filter_func(df_current)
             
-            # Aplica as regras de negócio fixas (duplicadas e índice)
+            # Apply the fixed business rules (duplicates and index)
             df_updated = drop_duplicates(df=df_current, keep=keep, debug=is_debug)
             d[key] = df_updated.reset_index(drop=True)
             
         elif isinstance(value, dict):
-            # Continua descendo na árvore
+            # Keep going down the tree
             process_dataframes_recursive(value, keep, is_debug, filters)
 
             
 def inject_filtered_subsets_recursive(d):
-    """Gera e injeta os novos sub-dataframes ('best_model' e 'best_kernel') em cada nível."""
+    """Generates and injects the new sub-dataframes ('best_model' and 'best_kernel') at each level."""
     for key, value in d.items():
         if isinstance(value, dict) and "self" in value:
             current_df = value["self"]
             
-            # Cria e adiciona as novas chaves no mesmo nível do 'self'
+            # Create and add the new keys at the same level as 'self'
             value["best_model"] = filter_df_best_per_akr_model(df=current_df)
             value["best_kernel"] = filter_df_best_per_kernel(df=current_df)
             
-            # Continua a busca nos sub-dicionários (ex: 'adam', 'adamw')
+            # Keep searching the sub-dictionaries (e.g.: 'adam', 'adamw')
             inject_filtered_subsets_recursive(value)
 
 
@@ -279,9 +279,9 @@ def drop_duplicates(df=None, keep='first', debug=False ):
 #    return df_clean
 
 def filter_df_optimizer(df, to_pass='Adam'):
-    # O regex busca exatamente: ponto + o nome desejado + aspas simples
-    # Exemplo para 'Adam': \.Adam'
-    # Esta implementacao se baseia na expectativa dos nomes terem esse formato:
+    # The regex searches exactly for: dot + the desired name + single quote
+    # Example for 'Adam': \.Adam'
+    # This implementation relies on the expectation that the names have this format:
     # <class 'torch.optim.adamw.AdamW'>
     regex_pattern = rf"\.{to_pass}'"
     
@@ -294,7 +294,7 @@ def filter_df_best_per_akr_model(df=None):
     k=kernel size
     r=dilation size
     '''
-    # 1. Identifica o nome da melhor arquitetura para cada trio akr
+    # 1. Identifies the name of the best architecture for each akr triple
     best_archs = (
         df.groupby(['arch_name', 'conv_kernel_size', 'use_transformers', 'conv_dilation_size'])['mse']
         .mean()
@@ -306,11 +306,11 @@ def filter_df_best_per_akr_model(df=None):
     #print(best_archs)
     #print("-------------------------------")
     #os._exit(0)
-    # 2. Filtra o DataFrame original mantendo apenas as linhas dessas arquiteturas
+    # 2. Filters the original DataFrame keeping only the rows of those architectures
     return  df[df['arch_name'].isin(best_archs)].copy()
 
 def filter_df_best_per_kernel(df=None):
-    # 1. Identifica o nome da melhor arquitetura para cada conv_kernel_size
+    # 1. Identifies the name of the best architecture for each conv_kernel_size
     best_archs = (
         df.groupby(['arch_name', 'conv_kernel_size', 'use_transformers'])['mse']
         .mean()
@@ -322,7 +322,7 @@ def filter_df_best_per_kernel(df=None):
     #print(best_archs)
     #print("-------------------------------")
     #os._exit(0)
-    # 2. Filtra o DataFrame original mantendo apenas as linhas dessas arquiteturas
+    # 2. Filters the original DataFrame keeping only the rows of those architectures
     return  df[df['arch_name'].isin(best_archs)].copy()
 
 def split_per_optimizer(df=None):
@@ -655,58 +655,59 @@ assert eval_utl.check_resolution(runs=refit_all_runs, res=gvars.get_data_resolut
 
 
 #"""
-#Estrutura do Dicionário de Dados do Pipeline de Experimentos.
+#Data Dictionary Structure of the Experiments Pipeline.
 #
-#Este dicionário centraliza e organiza os DataFrames do Pandas contendo os runs 
-#do MLflow. Os dados são estruturados de forma aninhada por profundidade de 
-#arquitetura ('shallow' e 'deep') e, em seguida, por tipo de otimizador usado 
-#('adam' e 'adamw').
+#This dictionary centralizes and organizes the Pandas DataFrames containing the
+#MLflow runs. The data is structured in a nested form, first by architecture
+#depth ('shallow' and 'deep') and then by the optimizer type used ('adam' and
+#'adamw').
 #
-#A árvore de dados passa por etapas automáticas de limpeza (remoção de modelos 
-#transunet com dilation > 1, drop de duplicadas de seeds e reset_index) antes 
-#de gerar e injetar as tabelas auxiliares de métricas nos nós correspondentes.
+#The data tree goes through automatic cleaning steps (removal of transunet
+#models with dilation > 1, drop of duplicated seeds and reset_index) before
+#generating and injecting the auxiliary metric tables into the corresponding
+#nodes.
 #
-#Esquema da Estrutura do Dicionário:
+#Data Dictionary Structure Schema:
 #-----------------------------------
 #data = {
 #    "shallow": {
-#        "self": pd.DataFrame,        # Dados shallow limpos (Todos os otimizadores juntos)
-#        "best_model": pd.DataFrame,  # Melhor configuração por modelo para a ramificação shallow
-#        "best_kernel": pd.DataFrame, # Melhor configuração por kernel para a ramificação shallow
+#        "self": pd.DataFrame,        # Cleaned shallow data (all optimizers together)
+#        "best_model": pd.DataFrame,  # Best configuration per model for the shallow branch
+#        "best_kernel": pd.DataFrame, # Best configuration per kernel for the shallow branch
 #        "adam": {
-#            "self": pd.DataFrame,        # Apenas runs shallow utilizando o otimizador Adam
-#            "best_model": pd.DataFrame,  # Melhor configuração por modelo para shallow + Adam
-#            "best_kernel": pd.DataFrame  # Melhor configuração por kernel para shallow + Adam
+#            "self": pd.DataFrame,        # Only shallow runs using the Adam optimizer
+#            "best_model": pd.DataFrame,  # Best configuration per model for shallow + Adam
+#            "best_kernel": pd.DataFrame  # Best configuration per kernel for shallow + Adam
 #        },
 #        "adamw": {
-#            "self": pd.DataFrame,        # Apenas runs shallow utilizando o otimizador AdamW
-#            "best_model": pd.DataFrame,  # Melhor configuração por modelo para shallow + AdamW
-#            "best_kernel": pd.DataFrame  # Melhor configuração por kernel para shallow + AdamW
+#            "self": pd.DataFrame,        # Only shallow runs using the AdamW optimizer
+#            "best_model": pd.DataFrame,  # Best configuration per model for shallow + AdamW
+#            "best_kernel": pd.DataFrame  # Best configuration per kernel for shallow + AdamW
 #        }
 #    },
 #    "deep": {
-#        "self": pd.DataFrame,        # Dados deep limpos (Todos os otimizadores juntos)
-#        "best_model": pd.DataFrame,  # Melhor configuração por modelo para a ramificação deep
-#        "best_kernel": pd.DataFrame, # Melhor configuração por kernel para a ramificação deep
+#        "self": pd.DataFrame,        # Cleaned deep data (all optimizers together)
+#        "best_model": pd.DataFrame,  # Best configuration per model for the deep branch
+#        "best_kernel": pd.DataFrame, # Best configuration per kernel for the deep branch
 #        "adam": {
-#            "self": pd.DataFrame,        # Apenas runs deep utilizando o otimizador Adam
-#            "best_model": pd.DataFrame,  # Melhor configuração por modelo para deep + Adam
-#            "best_kernel": pd.DataFrame  # Melhor configuração por kernel para deep + Adam
+#            "self": pd.DataFrame,        # Only deep runs using the Adam optimizer
+#            "best_model": pd.DataFrame,  # Best configuration per model for deep + Adam
+#            "best_kernel": pd.DataFrame  # Best configuration per kernel for deep + Adam
 #        },
 #        "adamw": {
-#            "self": pd.DataFrame,        # Apenas runs deep utilizando o otimizador AdamW
-#            "best_model": pd.DataFrame,  # Melhor configuração por modelo para deep + AdamW
-#            "best_kernel": pd.DataFrame  # Melhor configuração por kernel para deep + AdamW
+#            "self": pd.DataFrame,        # Only deep runs using the AdamW optimizer
+#            "best_model": pd.DataFrame,  # Best configuration per model for deep + AdamW
+#            "best_kernel": pd.DataFrame  # Best configuration per kernel for deep + AdamW
 #        }
 #    }
 #}
 #
-#Exemplos de Acesso:
+#Access Examples:
 #-------------------
-#>>> # Acessar o DataFrame limpo de execuções do Deep com AdamW:
+#>>> # Access the cleaned DataFrame of the Deep runs with AdamW:
 #>>> df_deep_adamw = data["deep"]["adamw"]["self"]
 #
-#>>> # Obter o melhor modelo geral para a arquitetura Shallow (Adam + AdamW combinados):
+#>>> # Get the overall best model for the Shallow architecture (Adam + AdamW combined):
 #>>> df_best_shallow = data["shallow"]["best_model"]
 #"""
 
@@ -716,7 +717,7 @@ df_shallow, df_deep = create_pd_from_runs(mlflow_=mlflow_, runs=refit_all_runs)
 df_shallow_adam, df_shallow_adamw = split_per_optimizer(df=df_shallow)
 df_deep_adam, df_deep_adamw = split_per_optimizer(df=df_deep)
 
-# Sua estrutura desejada pronta para o pipeline
+# Your desired structure, ready for the pipeline
 df_data = { 
     "shallow": {
         "self": df_shallow, 
@@ -731,19 +732,19 @@ df_data = {
 }
 
 
-# Lista de filtros que você quer aplicar em TODOS os DataFrames da árvore
-filtros_ativos = [
+# List of filters you want to apply to ALL DataFrames in the tree
+active_filters = [
     #filter_remove_transunet_with_dilation,
     #filter_remove_conv_kernel_size_9,
-    # filter_only_dilation_one  # <--- Descomente aqui se quiser aplicar o filtro geral de dilatação antiga
+    # filter_only_dilation_one  # <--- Uncomment here to apply the old general dilation filter
 ]
 
 is_debug = True
 keep='first'
-# Passo 1: Filtra, limpa duplicadas e reseta índices em um único comando
-process_dataframes_recursive(df_data, keep=keep, is_debug=is_debug, filters=filtros_ativos)
+# Step 1: Filter, clean duplicates and reset indexes in a single command
+process_dataframes_recursive(df_data, keep=keep, is_debug=is_debug, filters=active_filters)
 
-# Passo 2: Injeta as sub-tabelas (best_model, best_kernel) já baseadas nos dados filtrados
+# Step 2: Inject the sub-tables (best_model, best_kernel) already based on the filtered data
 inject_filtered_subsets_recursive(df_data)
 
 

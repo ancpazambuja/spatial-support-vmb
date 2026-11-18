@@ -63,7 +63,7 @@ class MLFlowUtils:
         cv_results = gridsearch.cv_results_
         nested_run = mlflow_client.create_run(experiment_id, run_name=subrun_name, tags={"mlflow.parentRunId": parent_run_id})
         #with mlflow.start_run(run_name=subrun_name, nested=True) as sub_run:  
-        mlflow_client.set_tag(nested_run.info.run_id, "run_name", tags["run_name"]) # tags sao apenas informativas
+        mlflow_client.set_tag(nested_run.info.run_id, "run_name", tags["run_name"]) # tags are informational only
 
         mlflow_client.log_param(nested_run.info.run_id,"folds", gridsearch.cv)
         mlflow_client.log_param(run_id=nested_run.info.run_id, key="model_size", value=model_size)
@@ -112,7 +112,7 @@ class MLFlowUtils:
     ): #model_name=None
         """Logging of cross validation results to mlflow tracking server
         """
-        #mlflow_client.set_tag(run.info.run_id, "run_name", run.info.run_name) # obs.: a tag eh apenas informativa
+        #mlflow_client.set_tag(run.info.run_id, "run_name", run.info.run_name) # note: the tag is informational only
 
 #        if model_name is not None:
 #            log.info(f"Logging model {model_name}")        

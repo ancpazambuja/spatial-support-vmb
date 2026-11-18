@@ -8,6 +8,7 @@ Code for thread processing.
 ############################
 # basic stuff
 import os
+import contextlib
 from datetime import datetime
 import time
 import random
@@ -31,6 +32,26 @@ import sklearn
 from sklearn.model_selection import GridSearchCV, train_test_split
 import torch
 import torch.nn as nn
+
+
+def _cuda_usable():
+    """True only when CUDA is actually usable (driver and device reachable).
+
+    torch.cuda.is_available() can return True on machines where a real CUDA
+    call still fails (e.g., a container without GPU passthrough); probe it.
+    """
+    try:
+        return torch.cuda.is_available() and \
+            torch.cuda.current_device() is not None
+    except Exception:
+        return False
+
+
+def cuda_device_str():
+    """Printable CUDA device info; 'cpu (no CUDA)' when CUDA is unusable."""
+    if _cuda_usable():
+        return torch.cuda.current_device()
+    return "cpu (no CUDA)"
 from torch.optim import SGD, Adam #, Adagrad, Adamax, NAdam, Adadelta, RMSprop
 import mlflow
 import mlflow.sklearn
@@ -225,18 +246,23 @@ class TaskProcessing:
             log.info(f"model_data_size: {self.model_data_size}")
 
         # set the target device
-        if torch.cuda.is_available():
+        if _cuda_usable():
             print (f"-----------------------")
-            print (f"cuda current device : {torch.cuda.current_device()}")
+            print (f"cuda current device : {cuda_device_str()}")
             print (f"self.device : {self.device}")
             print (f"-----------------------")
             torch.cuda.device(self.device)
-            print (f"[ thread {self.task.get_id()}cuda current device : {torch.cuda.current_device()}")
+            print (f"[ thread {self.task.get_id()}cuda current device : {cuda_device_str()}")
             torch.cuda.empty_cache()
-            self.stream = torch.cuda.Stream(device=self.device)
+        # CUDA stream exists only under GPU execution; None on CPU-only runs.
+        self.stream = (torch.cuda.Stream(device=self.device)
+                       if _cuda_usable() else None)
         #self.set_torch_device(self.task.get_device())
-        
-        with torch.cuda.stream(self.stream):
+
+        # CPU-only execution: no CUDA stream exists; use a null context so the
+        # code path below stays identical (GPU behavior is unchanged).
+        with (torch.cuda.stream(self.stream) if self.stream is not None
+              else contextlib.nullcontext()):
 
             # deal with mlflow client and run
             mlflow_client, run = MLFlowUtils.create_client_and_get_run(
@@ -251,11 +277,11 @@ class TaskProcessing:
 
             # create model
             print (f"-----------------------")
-            print (f"[ thread {self.task.get_id()} cuda current device : {torch.cuda.current_device()}")
+            print (f"[ thread {self.task.get_id()} cuda current device : {cuda_device_str()}")
             self.model = self.create_model(cb=gs_cbs, device=self.device)
 
             # create a view of the data from self.model_data_size
-            self.cropped_x, self.cropped_y, _, _ = self.crop_data(device=None) #self.device) # Testar com True
+            self.cropped_x, self.cropped_y, _, _ = self.crop_data(device=None) #self.device) # Test with True
 
             if self.g.verbose:
                 log.info(f"[ START ] Grid search for task id {self.task.get_id()} with {self.task.get_n_items()} hyper-parameters instances.")
@@ -368,13 +394,13 @@ class TaskProcessing:
             log.info(f"task device = {self.task.get_device()}")
             log.info(f"device = {device}")
             log.info(f"device type = {type(device)}")
-            log.info(f"cuda current device = {torch.cuda.current_device()}")
+            log.info(f"cuda current device = {cuda_device_str()}")
 
         # size of the attention size
         if self.g.gvars.get_data_type() == "shallow":
-            attention_img_size=(11,28) #10x28=280, sequence length quando patches.size=(1,1)
+            attention_img_size=(11,28) #10x28=280, sequence length when patches.size=(1,1)
         elif self.g.gvars.get_data_type() == "deep": 
-            attention_img_size=(21, 25) #21x25 = 525, sequence length quando patches.size=(1,1)
+            attention_img_size=(21, 25) #21x25 = 525, sequence length when patches.size=(1,1)
         else:
             raise ValueError
 
@@ -399,7 +425,7 @@ class TaskProcessing:
             pool_kernel_size=(2,2), pool_stride=(2,2),
             batch_normalization=True, dropout=0.2,
             #img_size=(672,800),
-            attention_img_size=attention_img_size, #21x25=525 == sequence length quando patches.size=(1,1)
+            attention_img_size=attention_img_size, #21x25=525 == sequence length when patches.size=(1,1)
             attention_in_channels=512,  # n_channels of the last encoding feature map
             attention_hidden_size=512, # D, embedding size 
             attention_num_heads=16,
@@ -435,18 +461,23 @@ class RefitTaskProcessing(TaskProcessing):
             log.info(f"[ START ] Refit using taks id {self.task.get_id()} with {self.task.get_n_items()} hyper-parameters instances.")
 
         # set the target device
-        if torch.cuda.is_available():
+        if _cuda_usable():
             print (f"-----------------------")
-            print (f"cuda current device : {torch.cuda.current_device()}")
+            print (f"cuda current device : {cuda_device_str()}")
             print (f"self.device : {self.device}")
             print (f"-----------------------")
             torch.cuda.device(self.device)
-            print (f"[ thread {self.task.get_id()}cuda current device : {torch.cuda.current_device()}")
+            print (f"[ thread {self.task.get_id()}cuda current device : {cuda_device_str()}")
             torch.cuda.empty_cache()
-            self.stream = torch.cuda.Stream(device=self.device)
+        # CUDA stream exists only under GPU execution; None on CPU-only runs.
+        self.stream = (torch.cuda.Stream(device=self.device)
+                       if _cuda_usable() else None)
         #self.set_torch_device(self.task.get_device())
-        
-        with torch.cuda.stream(self.stream):
+
+        # CPU-only execution: no CUDA stream exists; use a null context so the
+        # code path below stays identical (GPU behavior is unchanged).
+        with (torch.cuda.stream(self.stream) if self.stream is not None
+              else contextlib.nullcontext()):
 
             # deal with mlflow client and run
             mlflow_client, run = MLFlowUtils.create_client_and_get_run(
@@ -466,7 +497,7 @@ class RefitTaskProcessing(TaskProcessing):
 
             # create model
             print (f"-----------------------")
-            print (f"[ thread {self.task.get_id()} cuda current device : {torch.cuda.current_device()}")
+            print (f"[ thread {self.task.get_id()} cuda current device : {cuda_device_str()}")
             self.model = self.create_model(cb=refit_cbs, device=self.device, grid=self.task.get_item(0))
 
             # create a view of the data from self.model_data_size
@@ -525,7 +556,7 @@ class RefitTaskProcessing(TaskProcessing):
             log.info(f"task device = {self.task.get_device()}")
             log.info(f"device = {device}")
             log.info(f"device type = {type(device)}")
-            log.info(f"cuda current device = {torch.cuda.current_device()}")
+            log.info(f"cuda current device = {cuda_device_str()}")
             log.info(f"type of grid = {type(grid)}")
             log.info(f"grid = {grid}")
 
@@ -655,18 +686,23 @@ class GrokkingTaskProcessing(RefitTaskProcessing):
             log.info(f"[ START ] Refit using taks id {self.task.get_id()} with {self.task.get_n_items()} hyper-parameters instances.")
 
         # set the target device
-        if torch.cuda.is_available():
+        if _cuda_usable():
             print (f"-----------------------")
-            print (f"cuda current device : {torch.cuda.current_device()}")
+            print (f"cuda current device : {cuda_device_str()}")
             print (f"self.device : {self.device}")
             print (f"-----------------------")
             torch.cuda.device(self.device)
-            print (f"[ thread {self.task.get_id()}cuda current device : {torch.cuda.current_device()}")
+            print (f"[ thread {self.task.get_id()}cuda current device : {cuda_device_str()}")
             torch.cuda.empty_cache()
-            self.stream = torch.cuda.Stream(device=self.device)
+        # CUDA stream exists only under GPU execution; None on CPU-only runs.
+        self.stream = (torch.cuda.Stream(device=self.device)
+                       if _cuda_usable() else None)
         #self.set_torch_device(self.task.get_device())
-        
-        with torch.cuda.stream(self.stream):
+
+        # CPU-only execution: no CUDA stream exists; use a null context so the
+        # code path below stays identical (GPU behavior is unchanged).
+        with (torch.cuda.stream(self.stream) if self.stream is not None
+              else contextlib.nullcontext()):
 
             # deal with mlflow client and run
             mlflow_client, run = MLFlowUtils.create_client_and_get_run(
@@ -683,7 +719,7 @@ class GrokkingTaskProcessing(RefitTaskProcessing):
 
             # create model
             print (f"-----------------------")
-            print (f"[ thread {self.task.get_id()} cuda current device : {torch.cuda.current_device()}")
+            print (f"[ thread {self.task.get_id()} cuda current device : {cuda_device_str()}")
             self.model = self.create_model(cb=refit_cbs, device=self.device, grid=self.task.get_item(0))
 
             # create a view of the data from self.model_data_size
@@ -772,7 +808,7 @@ class TaskProcessingGlobals:
 
 
 
-###### ---->>>>  TUDO ISSO ABAIXO FOI PARA A CALLBACK TwoPhaseTraining
+###### ---->>>>  ALL OF THE CODE BELOW WENT TO THE TwoPhaseTraining CALLBACK
 ## ==========================================
 ## STEP 1: Train the Pure Bottleneck
 ## ==========================================

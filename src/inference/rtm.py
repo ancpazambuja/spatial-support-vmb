@@ -1,5 +1,23 @@
 """@package rtm_proxy.py
 Module responsible for running the rtm from a shell command line. 
+
+STATUS: WORK IN PROGRESS / TODO
+-------------------------------
+This module is an initiated but INCOMPLETE draft. It is NOT part of the
+reproducible pipeline of the paper yet.
+
+Intended purpose:
+    Provide the RTM (Reverse Time Migration) execution step of the complete
+    deep-tomography inference, which will alternate RTM migration and neural
+    network velocity-update inference across the three iterations of the
+    deep-tomography pipeline.
+
+Known gaps:
+    - `RTMExe.run()` is unfinished (and currently passes an argument that
+      `make_args()` does not accept).
+    - `RTMProjExe` is a skeleton.
+
+Do not rely on this module until this notice is removed.
 """
 
 import subprocess

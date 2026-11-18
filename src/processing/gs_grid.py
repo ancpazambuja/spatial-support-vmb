@@ -102,9 +102,9 @@ class Grid:
         conv_dilation = global_vars.get_conv_dilation_size()
         # size of the attention size
         if global_vars.get_data_type() == "shallow":
-            attention_img_size=(11,28) #10x28=280, sequence length quando patches.size=(1,1)
+            attention_img_size=(11,28) #10x28=280, sequence length when patches.size=(1,1)
         elif global_vars.get_data_type() == "deep": 
-            attention_img_size=(21, 25) #21x25 = 525, sequence length quando patches.size=(1,1)
+            attention_img_size=(21, 25) #21x25 = 525, sequence length when patches.size=(1,1)
         else:
             raise ValueError
         # attention configuration
@@ -137,7 +137,10 @@ class Grid:
         param_grid_base = {
             'max_epochs': max_epochs_list,
             'batch_size': [16],
-            'device': ['cuda'],
+            # NOTE: skorch receives the resolved device; the task-level
+            # 'cuda:all' special case maps to plain 'cuda' for the model.
+            'device': ['cuda' if global_vars.get_device() == 'cuda:all'
+                       else global_vars.get_device()],
             #'optimizer__momentum': [0.0, 0.2, 0.4, 0.6, 0.8, 0.9],
             #'optimizer__momentum': [0.0], #, 0.2, 0.4, 0.6, 0.8, 0.9],
             'optimizer': [torch.optim.Adam], #, SGD], #, RMSprop, Adagrad, Adadelta, Adam, Adamax, NAdam],
@@ -187,9 +190,9 @@ class GSGridAdamW(Grid):
         conv_dilation = global_vars.get_conv_dilation_size()
         # size of the attention size
         if global_vars.get_data_type() == "shallow":
-            attention_img_size=(11,28) #10x28=280, sequence length quando patches.size=(1,1)
+            attention_img_size=(11,28) #10x28=280, sequence length when patches.size=(1,1)
         elif global_vars.get_data_type() == "deep": 
-            attention_img_size=(21, 25) #21x25 = 525, sequence length quando patches.size=(1,1)
+            attention_img_size=(21, 25) #21x25 = 525, sequence length when patches.size=(1,1)
         else:
             raise ValueError
         # attention configuration
@@ -225,7 +228,10 @@ class GSGridAdamW(Grid):
         param_grid_base = {
             'max_epochs': max_epochs_list,
             'batch_size': [16],
-            'device': ['cuda'],
+            # NOTE: skorch receives the resolved device; the task-level
+            # 'cuda:all' special case maps to plain 'cuda' for the model.
+            'device': ['cuda' if global_vars.get_device() == 'cuda:all'
+                       else global_vars.get_device()],
             'optimizer': [torch.optim.AdamW], #, SGD], #, RMSprop, Adagrad, Adadelta, Adam, Adamax, NAdam],
             #'optimizer__momentum': [0.0, 0.2, 0.4, 0.6, 0.8, 0.9],
             #'optimizer__momentum': [0.0], #, 0.2, 0.4, 0.6, 0.8, 0.9],
@@ -275,15 +281,15 @@ class RefitGrid(Grid):
         # model size
         model_data_size = utl.get_model_data_size(global_vars.get_raw_train_data())
         if global_vars.get_data_type() == "shallow":
-            attention_img_size=(11,28) #11x28=308, sequence length quando patches.size=(1,1)
+            attention_img_size=(11,28) #11x28=308, sequence length when patches.size=(1,1)
         elif global_vars.get_data_type() == "deep": 
-            attention_img_size=(21, 25) #21x25 = 525, sequence length quando patches.size=(1,1)
+            attention_img_size=(21, 25) #21x25 = 525, sequence length when patches.size=(1,1)
         else:
             raise ValueError
 
         # define common set of hyper-parameters
         param_grid_base = {
-            # RETIRAR ESSAS DUAS LINHAS  E DESCOMENTAR AS OUTRAS DUAS - teste do Adamw
+            # REMOVE THESE TWO LINES AND UNCOMMENT THE OTHER TWO - AdamW test
             #'optimizer': torch.optim.AdamW, #, SGD], #, RMSprop, Adagrad, Adadelta, Adam, Adamax, NAdam],
             #'callbacks__grad_clip__clip_value': 1.0,
             #'callbacks__grad_clip__print_every': 5,

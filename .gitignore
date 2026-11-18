@@ -36,6 +36,9 @@ results/generated/
 *.hdf5
 *.segy
 *.sgy
+# Exception: the quickstart data subsets are part of the repository.
+!data/shallower/**
+!data/deeper/**
 
 # Secrets and local configuration
 .env

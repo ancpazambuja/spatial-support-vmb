@@ -27,50 +27,50 @@ class CustomGradientClipping(Callback):
             )
 
 
-# 2. Esta é a nova classe que herda da classe base e adiciona o monitoramento
+# 2. This is the new class that inherits from the base class and adds monitoring
 class MonitoredGradClip(CustomGradientClipping):
     def __init__(self, clip_value=1.0, print_every=5, iterations=0):
-        # Inicializa a classe base herdando o clip_value
+        # Initializes the base class, inheriting the clip_value
         super().__init__(clip_value=clip_value)
         self.print_every = print_every
-        self.iterations = iterations  # Contador de lotes (batches)
+        self.iterations = iterations  # Batch counter
 
     def on_grad_computed(self, net, named_parameters, **kwargs):
 
-        # Executa o print apenas no intervalo definido (padrão: a cada 50 batches)
+        # Print only at the defined interval (default: every 50 batches)
         should_print = (self.iterations % self.print_every == 0)
 
         if should_print:
-            print(f"\n[AUDITORIA CLIP] Batch #{self.iterations} | clip_value is {self.clip_value}")
+            print(f"\n[CLIP AUDIT] Batch #{self.iterations} | clip_value is {self.clip_value}")
 
         if self.clip_value is None:
             return
 
-        # Filtra os parâmetros com gradiente válido
+        # Filter parameters with a valid gradient
         params = [p for _, p in named_parameters if p.grad is not None]
         if not params:
             return
 
         if should_print:
-            # Calcula a norma L2 total antes da modificação do PyTorch
-            norma_antes = torch.norm(
+            # Computes the total L2 norm before PyTorch modifies it
+            norm_before = torch.norm(
                 torch.stack([torch.norm(p.grad.detach(), 2) for p in params]), 2
             ).item()
 
-        # Chama a lógica de clipping da classe base que criamos anteriormente
+        # Calls the clipping logic of the base class we created previously
         super().on_grad_computed(net, named_parameters, **kwargs)
 
         if should_print:
-            # Calcula a norma L2 total após a execução do clipping
-            norma_depois = torch.norm(
+            # Computes the total L2 norm after clipping is applied
+            norm_after = torch.norm(
                 torch.stack([torch.norm(p.grad.detach(), 2) for p in params]), 2
             ).item()
-            
-            print(f"\n[AUDITORIA CLIP] Batch #{self.iterations} | "
-                  f"Norma Original: {norma_antes:.4f} | "
-                  f"Norma Pós-Clip (Limite: {self.clip_value}): {norma_depois:.4f}")
 
-        # Incrementa o contador de iterações do treinamento
+            print(f"\n[CLIP AUDIT] Batch #{self.iterations} | "
+                  f"Original norm: {norm_before:.4f} | "
+                  f"Post-clip norm (limit: {self.clip_value}): {norm_after:.4f}")
+
+        # Increments the training iteration counter
         self.iterations += 1
 
 

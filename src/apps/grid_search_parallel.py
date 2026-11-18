@@ -317,7 +317,7 @@ test_logger.log_client(mlflow_client=mlflow_client, run_id=run.info.run_id, titl
 #print(params)
 
 
-log.info("FINALIZANDO COM EXIT --- RETIRAR ISSO")
+log.info("FINISHING WITH EXIT --- REMOVE THIS")
 os._exit(0)
 
 
@@ -355,7 +355,7 @@ for mean, stdev, param in zip(means, stds, params):
     #mlflow_.log_model(model=skmodel, artifact_path=model_path, 
     #                  inputs=x_test.numpy(), predictions=y_test_hat_skorch,
     #                  conda_env=None
-    #                ) # nao estah funcionando para modelos grandes.
+    #                ) # not working for large models.
 
 #mlflow.evaluate(model=None, data=None, *, model_type=None, targets=None, predictions=None, dataset_path=None,
 #                feature_names=None, evaluators=None, evaluator_config=None, custom_metrics=None,
@@ -575,7 +575,7 @@ with mlflow.start_run(run_id=run_id):
     mlflow_.log_figure(yy_ssim_figs, "SSIM_EVAL.png")
     train_logger.log(mlflow_obj=mlflow_, title_prefix="TRAIN_HIGHRES")
     test_logger.log(mlflow_obj=mlflow_, title_prefix="TEST_HIGHRES")
-# ## DAQUI PARA BAIXO É RASCUNHO
+# ## EVERYTHING BELOW IS A DRAFT
 
 
 

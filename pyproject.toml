@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spatial-support-vmb"
+version = "0.1.0"
+description = "Reproducibility materials for 'On the Calibration of Spatial Support in Deep Learning-Assisted Velocity Model Building'"
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+license = { text = "MIT" }
+# TODO: fill in author names (keep in sync with CITATION.cff).
+authors = [{ name = "TODO" }]
+keywords = [
+    "seismic",
+    "velocity model building",
+    "deep learning",
+    "geophysics",
+    "reproducibility",
+]
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+# Direct dependencies imported by the source code, pinned to the versions of
+# the environment used for the paper. The complete frozen environment (all
+# transitive packages, as installed in the reference container) is preserved in
+# configs/requirements-frozen.txt.
+dependencies = [
+    "joblib==1.4.2",
+    "matplotlib==3.8.3",
+    "ml_collections==1.1.0",
+    "mlflow==2.21.3",
+    "numpy==1.26.4",
+    "pandas==2.2.3",
+    "pillow==10.3.0",
+    "PyLaTeX==1.4.2",
+    "scikit-learn==1.7.0",
+    "scipy==1.12.0",
+    "seaborn==0.13.2",
+    "segyio==1.9.12",
+    "skorch==1.1.0",
+    "torch==2.3.0",
+    "torchinfo==1.8.0",
+    "torchvision==0.18.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+]
+
+[project.urls]
+Repository = "https://github.com/ancpazambuja/spatial-support-vmb"
+# TODO: add the Zenodo DOI (or paper DOI) after the release:
+# DOI = "10.5281/zenodo.XXXXXXX"
+
+# NOTE: the source tree lives in src/ and is imported as the package "src"
+# (historical layout of the original research code); implicit namespace
+# packages, no __init__.py files required.
+[tool.setuptools.packages.find]
+include = ["src*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

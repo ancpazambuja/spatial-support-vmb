@@ -1251,7 +1251,7 @@ def test_arch_name2arch_name_paper():
     ]
 
     for use_transformer, cks, cds, tcks, opt in test_cases:
-        # 1) Gera o nome interno (fonte do parsing)
+        # 1) Generates the internal name (parsing source)
         arch_name = EvalUtils.get_model_name(
             use_transformer=use_transformer,
             conv_kernel_size=cks,
@@ -1260,24 +1260,24 @@ def test_arch_name2arch_name_paper():
             optmizer=opt,
         )
 
-        # 2) Gera o nome esperado do paper diretamente
+        # 2) Generates the expected paper name directly
         expected_paper_name = EvalUtils.get_model_name_paper(
             use_transformer=use_transformer,
             conv_kernel_size=cks,
             conv_dilation_size=cds,
         )
 
-        # 3) Aplica o mapeamento via método sob teste
+        # 3) Applies the mapping via the method under test
         actual_paper_name = EvalUtils.arch_name2arch_name_paper(arch_name)
 
         assert actual_paper_name == expected_paper_name, (
-            f"Falha no mapeamento.\n"
+            f"Mapping failed.\n"
             f"  arch_name        = {arch_name!r}\n"
             f"  expected (paper) = {expected_paper_name!r}\n"
             f"  actual   (paper) = {actual_paper_name!r}"
         )
 
-    # 4) Testes de valores literais explícitos (não dependem de get_model_name)
+    # 4) Tests of explicit literal values (do not depend on get_model_name)
     literal_cases = [
         ("unet.cks_3x3.cds_1x1.tcks_2x2.opt_Adam",   "U-Net, k=3, r=1"),
         ("unet.cks_5x5.cds_2x2.tcks_2x2.opt_AdamW",  "U-Net, k=5, r=2"),
@@ -1286,17 +1286,17 @@ def test_arch_name2arch_name_paper():
     for arch_name, expected in literal_cases:
         actual = EvalUtils.arch_name2arch_name_paper(arch_name)
         assert actual == expected, (
-            f"Falha no caso literal.\n"
+            f"Literal case failed.\n"
             f"  arch_name = {arch_name!r}\n"
             f"  expected  = {expected!r}\n"
             f"  actual    = {actual!r}"
         )
 
-    # 5) Testes de erro: arch_name malformado deve levantar ValueError
+    # 5) Error tests: a malformed arch_name must raise ValueError
     invalid_cases = [
-        "resnet.cks_3x3.cds_1x1.tcks_2x2.opt_Adam",   # arch desconhecida
-        "unet.kernel_3x3.cds_1x1.tcks_2x2.opt_Adam",  # token cks inválido
-        "unet.cks_3x3.dilation_1x1.tcks_2x2.opt_Adam" # token cds inválido
+        "resnet.cks_3x3.cds_1x1.tcks_2x2.opt_Adam",   # unknown architecture
+        "unet.kernel_3x3.cds_1x1.tcks_2x2.opt_Adam",  # invalid cks token
+        "unet.cks_3x3.dilation_1x1.tcks_2x2.opt_Adam" # invalid cds token
     ]
     for bad_name in invalid_cases:
         try:
@@ -1305,7 +1305,7 @@ def test_arch_name2arch_name_paper():
             pass
         else:
             raise AssertionError(
-                f"Esperava ValueError para arch_name inválido: {bad_name!r}"
+                f"Expected ValueError for invalid arch_name: {bad_name!r}"
             )
 
-    print("Todos os testes de arch_name2arch_name_paper passaram.")
+    print("All arch_name2arch_name_paper tests passed.")

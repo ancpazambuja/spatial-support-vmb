@@ -31,20 +31,20 @@ class Graph:
     """!
     Utility class for graphics.
     """
-    #definindo parametros globais
-    PLOT_SX = 6 # tamanho do display em X
-    PLOT_SY = 6 # tamanho do display em Y
-    PLOT_FC_COLOR = 'w'  # cor de fundo branca
+    #defining global parameters
+    PLOT_SX = 6 # display size in X
+    PLOT_SY = 6 # display size in Y
+    PLOT_FC_COLOR = 'w'  # white background color
 
 
-    #visualiza uma matriz 2d de rgb
+    #visualizes a 2d rgb matrix
     def drawImageRGB (img, title=''):
         plt.figure(figsize=[Graph.PLOT_SX, Graph.PLOT_SY], facecolor=Graph.PLOT_FC_COLOR)
         plt.title(title)
         plt.imshow(img)
         plt.show()
 
-    #visualiza um atributo associado a uma escala de cores
+    #visualizes an attribute associated with a color scale
     def drawImageAttr2(img, title='', vmin=None, vmax=None, cmap="gray", colorbar=False, interpolation=None, norm=None, save=False, extent=None, aspect=None):
         plt.figure(figsize=[Graph.PLOT_SX,Graph.PLOT_SY], facecolor=Graph.PLOT_FC_COLOR)
         plt.title(title)
@@ -58,7 +58,7 @@ class Graph:
 
 
 
-    #visualiza um atributo associado a uma escala de cores
+    #visualizes an attribute associated with a color scale
     def drawImageAttr (img, title='', vmin=None, vmax=None, cmap="gray", colorbar=False, interpolation=None, norm=None, save=False):
         plt.figure(figsize=[Graph.PLOT_SX,Graph.PLOT_SY], facecolor=Graph.PLOT_FC_COLOR)
         plt.title(title)
@@ -71,14 +71,14 @@ class Graph:
             plt.show()
 
 
-    #visualiza uma matriz 2d de rgb em um eixo de subplot
+    #visualizes a 2d rgb matrix em um eixo de subplot
     def drawImageRGB_grid(eixo, img, xlim=None, title=None, interpolation=None, aspect=None):
         eixo.set_title(title)
         eixo.imshow(img,interpolation=interpolation,aspect=aspect)
         eixo.set_xlim(xlim)
 
 
-    #visualiza um atributo associado a uma escala de cores
+    #visualizes an attribute associated with a color scale
     def drawImageAttr_grid (eixo, img, vmin=None, vmax=None, title='', cmap="gray", colorbar=False, interpolation=None, norm=None, aspect=None):
         eixo.set_title(title)
         img = eixo.imshow(img, cmap, vmin=vmin, vmax=vmax, interpolation=interpolation, norm=norm, aspect=aspect)
@@ -97,58 +97,58 @@ class Graph:
 
     # Desenha o histograma de um array, dentro de um grid, com controle total na geracao dos bins.
     def hist_grid (eixo, v, bins, title="histogram"):
-        h, b = np.histogram(v,bins)           #calcula histogram
-        centers = np.zeros(h.shape[0])        # calcula o centro de cada bin
+        h, b = np.histogram(v,bins)           #computes histogram
+        centers = np.zeros(h.shape[0])        # computes the center of each bin
         for i,val in enumerate(bins[:-1]):
             centers[i] = (val + bins[i+1]) / 2
         eixo.set_title(title)
         #eixo.plot(centers,h)                  #desenha a funcao
-        eixo.fill_between(centers,h)          #preenche a parte debaixo da curva
+        eixo.fill_between(centers,h)          #fills the area under the curve
         eixo.set_xlim( [centers.min(), centers.max()] )
         return h,bins
 
 
-    # Desenha o histograma de uma array. Os bins são gerados automaticamente a partir de v.min e v.max.
+    # Draws the histogram of an array. The bins are generated automatically from v.min and v.max.
     def hist2 (v, nbins, lim, title="histogram"):
         plt.figure(figsize=(Graph.PLOT_SX*2,Graph.PLOT_SY))
         plt.title(title)
 
-        #para forçar os limites exatos dos bins
+        #to force the exact bin limits
         #n,bins,patches=plt.hist(v,nbins,range=lim)
 
-        #para deixar os limites dos bins serem definidos a partir de v.min e v.max
+        #to let the bin limits be defined from v.min and v.max
         n,bins,patches=plt.hist(v,nbins)
         plt.xlim(lim)
         plt.show()
         return n,bins,patches
 
 
-    def drawFunction_grid(eixo, x,ys, title=None, cores=None, fill=False, lw=None, xscale=True):
+    def drawFunction_grid(eixo, x,ys, title=None, colors=None, fill=False, lw=None, xscale=True):
         
-        multiplo = False 
+        multiple = False 
         if ys.ndim > 1:
-            multiplo = True
-            fill = False    # se forem mais linhas, nao desenhar com fill
+            multiple = True
+            fill = False    # if there are multiple lines, do not draw with fill
         
-        if cores is not None:
-            if multiplo:
-                assert(len(cores) == ys.shape[0])
+        if colors is not None:
+            if multiple:
+                assert(len(colors) == ys.shape[0])
             else:
-                assert(len(cores) == 1)
+                assert(len(colors) == 1)
         else:
-            if multiplo:
-                cores = ["black"] * ys.shape[0]
+            if multiple:
+                colors = ["black"] * ys.shape[0]
             else:
-                cores = [ "black" ]
+                colors = [ "black" ]
 
-        if not multiplo:
-            linhas = np.reshape(ys, (1, ys.shape[0]))
+        if not multiple:
+            lines = np.reshape(ys, (1, ys.shape[0]))
         else:
-            linhas = ys
+            lines = ys
 
         eixo.set_title(title)
 
-        for l,c in list(zip(linhas,cores)):
+        for l,c in list(zip(lines,colors)):
             if fill:
                 eixo.fill_between(x,l)
             else:
@@ -158,32 +158,32 @@ class Graph:
             eixo.set_xlim(x.min(), x.max())
 
 
-    def drawFunction(x,ys, title=None, cores=None, fill=False, lw=None):
+    def drawFunction(x,ys, title=None, colors=None, fill=False, lw=None):
 
-        multiplo = False 
+        multiple = False 
         if ys.ndim > 1:
-            multiplo = True
-            fill = False    # se forem mais linhas, nao desenhar com fill
+            multiple = True
+            fill = False    # if there are multiple lines, do not draw with fill
 
-        if cores is not None:
-            if multiplo:
-                assert(len(cores) == ys.shape[0])
+        if colors is not None:
+            if multiple:
+                assert(len(colors) == ys.shape[0])
             else:
-                assert(len(cores) == 1)
+                assert(len(colors) == 1)
         else:
-            if multiplo:
-                cores = ["black"] * ys.shape[0]
+            if multiple:
+                colors = ["black"] * ys.shape[0]
             else:
-                cores = [ "black" ]
+                colors = [ "black" ]
 
-        if not multiplo:
-            linhas = np.reshape(ys, (1, ys.shape[0]))
+        if not multiple:
+            lines = np.reshape(ys, (1, ys.shape[0]))
         else:
-            linhas = ys
+            lines = ys
 
         plt.title(title)
 
-        for l,c in list(zip(linhas,cores)):
+        for l,c in list(zip(lines,colors)):
             if fill:
                 plt.fill_between(x,l)
             else:
@@ -207,7 +207,7 @@ class Graph:
         return np.amin(v), np.amax(v) 
 
 
-    # cria uma nova imagem com a luminância
+    # creates a new image with the luminance
     def lum(img):
         return np.dot(img,[0.2126,0.7152,0.0722])
 
@@ -318,24 +318,24 @@ class Utils:
 #        torch.manual_seed(seed)
 #        torch.cuda.manual_seed(seed)
 #        torch.backends.cudnn.benchmark = False
-#        #torch.use_deterministic_algorithms(True)  # soh funciona com warn_only=True
+#        #torch.use_deterministic_algorithms(True)  # only works with warn_only=True
 
-        # 1. Python e variáveis de ambiente
-        os.environ['CUBLAS_WORKSPACE_CONFIG'] = ':4096:8' # Necessário se usar deterministic_algorithms
+        # 1. Python and environment variables
+        os.environ['CUBLAS_WORKSPACE_CONFIG'] = ':4096:8' # Required when using deterministic_algorithms
         os.environ['PYTHONHASHSEED'] = str(seed)
         random.seed(seed)
         np.random.seed(seed)
         
-        # 2. PyTorch (CPU e GPU)
+        # 2. PyTorch (CPU and GPU)
         torch.manual_seed(seed)
         torch.cuda.manual_seed(seed)
         torch.cuda.manual_seed_all(seed)
         
-        # 3. Travar algoritmos de hardware
+        # 3. Lock down hardware algorithms
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
         
-        # 4. Avisar sobre operações não-determinísticas inevitáveis
+        # 4. Warn about unavoidable non-deterministic operations
         #torch.use_deterministic_algorithms(True, warn_only=True)
         torch.use_deterministic_algorithms(True, warn_only=False)
 
@@ -462,20 +462,20 @@ class Utils:
         grad_norm_callback = MLModelsUtils.get_skorch_gradient_clipping_callback(clip_value=1.0)
         #grad_norm_callback = MLModelsUtils.get_skorch_monitor_gradient_clipping_callback(clip_value=1.0)
 
-        ### OBS ###
-        # Testes empiricos mostraram que o encoder-decoder treina sem overfitting ateh aproximadamente
-        # 250 epocas com kernel size = 9 (e com lr_schedule).
+        ### NOTE ###
+        # Empirical tests showed that the encoder-decoder trains without overfitting up to approximately
+        # 250 epochs with kernel size = 9 (and with lr_schedule).
         refit_two_step_training_cb = ( 
             'two_step_training',
             MLModelsUtils.get_skorch_two_step_training_callback(
-                #parametros validos para max_epochs = 1000
+                #valid parameters for max_epochs = 1000
                 nmb_of_epochs=global_vars.get_max_epochs(), step1_perc=0.125, warmup_perc=0.50, finetune_lr=1e-3
             )
         )
 
-        ### OBS ###
-        # Testes empiricos mostraram que o encoder-decoder treina sem overfitting ateh aproximadamente
-        # 250 epocas com kernel size = 9 (e com lr_schedule).
+        ### NOTE ###
+        # Empirical tests showed that the encoder-decoder trains without overfitting up to approximately
+        # 250 epochs with kernel size = 9 (and with lr_schedule).
         refit_encoder_decoder_only_cb = ( 
             'encoder_decoder_only',
             MLModelsUtils.get_skorch_disable_skip_connections_callback()
@@ -612,8 +612,8 @@ class Sismo:
             inline.reshape((nilines, nxlines)) 
             xline.reshape((nilines, nxlines)) 
             
-            #Premissa de que o dado estah cheio
-            assert nilines * nxlines == n_traces, "[ ERROR ] Dado não está cheio!"
+            #Assumption that the data is full (no missing traces)
+            assert nilines * nxlines == n_traces, "[ ERROR ] Data is not full!"
             
         #      min_xlin
         #      max_xlin
@@ -681,11 +681,11 @@ class Sismo:
 
     
 #########################################################################
-## CLASSE BASE COM ATRIBUTOS BÁSICOS
+## BASE CLASS WITH BASIC ATTRIBUTES
 class Base:
 
     def __init__(self, name="Base class name"):
-        """documentação... a fazer."""
+        """documentation... to do."""
         self.name = name
 
         
@@ -839,11 +839,11 @@ class ProjectDirs(Base):
 
 class DataInfo(Base):
     
-    def __init__(self, name="Parametos dos Dados de Entrada", nsamples_trainning=10):
+    def __init__(self, name="Input Data Parameters", nsamples_trainning=10):
         super().__init__(name="DataInfo")
         self.offset  = 350
         self.nsamples_trainning = nsamples_trainning
-        self.x_shape = (351,901,15) #h,w,ncanais
+        self.x_shape = (351,901,15) #h,w,nchannels
         self.y_shape = (351,901)    #h,w
         #self.x_shape = (352,352,14) #h,w,ncanais
         #self.y_shape = (352,352)    #h,w

@@ -244,20 +244,20 @@ def df2latex(
     if label is not None:
         parts.append(f"See Table \\ref{{{label}}}.\n")
 
-    # --- Ajuste dinâmico do tabularx ---
+    # --- Dynamic adjustment of the tabularx ---
     num_cols = len(columns)
-    col_format = "|" + "X|" * num_cols  # Gera algo como |X|X|X|
+    col_format = "|" + "X|" * num_cols  # Generates something like |X|X|X|
     
     parts.append(r"\begin{table}[h!] ")
     parts.append(r"\begin{tabularx}{\textwidth}{" + col_format + "} ")
     parts.append("\n" + r"\hline" + "\n")
 
-    # Cabeçalho
+    # Header
     header_cells = [r"\textbf{" + c.replace("_", r"\_") + "}" for c in columns_labels]
     parts.append(" & ".join(header_cells) + r" \\ " + "\n")
     parts.append(r"\hline" + "\n")
 
-    # Linhas do DataFrame
+    # DataFrame rows
     for _, row in df.iterrows():
         row_cells = []
         for v in row.values:
@@ -940,8 +940,8 @@ class EvalBestModelsAfterFastFail(EvalListBase):
         df_heatmap_ = pd.DataFrame(heatmap)#.swaplevel(0,1).sort_index()
         df_heatmap_.index.names = ['arch_name', 'seed']
         df_heatmap_ = df_heatmap_.swaplevel(0,1).sort_index()
-#        pd.set_option('display.max_columns', None) # Mostra todas as colunas
-#        pd.set_option('display.max_rows', None)    # Mostra todas as linhas (cuidado com DFs grandes!)
+#        pd.set_option('display.max_columns', None) # Shows all columns
+#        pd.set_option('display.max_rows', None)    # Shows all rows (careful with large DFs!)
 #        print(f"df_heatmap_ = {df_heatmap_}")
 #        print(f"df_mse_heatmap = {df_mse_heatmap}")
 #        print(df_heatmap_.info())
@@ -1078,7 +1078,7 @@ class EvalHeatmapEvaluationMatrix(EvalListBase):
             df_heatmap = pd.DataFrame(df_aux['mse_values'].tolist(), index=df_aux.index)
             df_heatmap = df_heatmap.rename(index=eval_utl.arch_name2arch_name_paper) 
             assert df_heatmap.index.is_unique, (
-                f"Mapeamento gerou rótulos duplicados: "
+                f"Mapping produced duplicate labels: "
                 f"{df_heatmap.index[df_heatmap.index.duplicated()].tolist()}"
             )
 
@@ -1343,7 +1343,7 @@ class EvalPerExampleBehaviour(EvalListBase):
             marks = np.where(
             (df.notna()) & (df >= threshold), 
             '✖', #'●', '★', '✖', '▲', etc.)
-            ''    # Vazio para o resto
+            ''    # Empty for the rest
             )
 
             # highlight plot
@@ -1356,9 +1356,9 @@ class EvalPerExampleBehaviour(EvalListBase):
                 cbar=False,
                 fmt='',
                 annot_kws={
-                    'size': 5,             # Tamanho do símbolo
-                    'color': 'red',       # Cor do símbolo (ex: white, red, black)
-                    'weight': 'bold'        # Negrito para destacar mais
+                    'size': 5,             # Symbol size
+                    'color': 'red',       # Symbol color (e.g.: white, red, black)
+                    'weight': 'bold'        # Bold to make it stand out more
                 }
             )
 
@@ -1496,13 +1496,13 @@ class EvalPerExampleBehaviour(EvalListBase):
 #- Heatmap of split instability sis_isi​ (same ordering)
 #- Small histogram of hih_ihi​
 #- Mark the top-50 (or top-10) examples
-#Etapa 3 — Heatmap 20×50 (o que você pediu agora)
-#Implementaremos:
+#Stage 3 — 20×50 heatmap (what you asked for now)
+#We will implement:
 #
-#Ordenação explícita dos exemplos (por h_i)
-#Reorganização em grid 20×50
-#Controle de colormap, clipping e colorbar
-#Mesma ordem reutilizada para outros mapas (consistência visual)
+#Explicit ordering of the examples (by h_i)
+#Reorganization into a 20×50 grid
+#Colormap, clipping, and colorbar control
+#Same ordering reused for the other maps (visual consistency)
 
         title = f"{all_or_surv} Models"
         nhard = 25

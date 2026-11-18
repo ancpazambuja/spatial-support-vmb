@@ -29,14 +29,15 @@ class BaseBuilder:
             return filelist
         else:
             ######################################################
-            #### ATENCAO: A LINHA ABAIXO ESTÁ COM ERRO. MAS....
-            # Quando self.max_samples é -1, perde-se a última 
-            # posicao dos dados de treino e teste.
-            # Mas eu não posso corrigir isso agora, pois isso 
-            # causaria um descompasso entre as execucoes que jah 
-            # ocorreram (com o erro) e as analises e avaliacoes
-            # que foram executadas depois. Alem de novas execucoes
-            # que ficariam com datasets diferentes.
+            #### WARNING: THE LINE BELOW HAS A BUG. HOWEVER...
+            # When self.max_samples is -1, the last position of
+            # the training and test data is lost.
+            # I cannot fix this now, because doing so would cause
+            # a mismatch between the runs that have already
+            # happened (with the bug) and the analyses and
+            # evaluations that were executed afterwards, as well
+            # as new runs, which would end up with different
+            # datasets.
             ######################################################
             final_list = [ filelist[i] for i in indexes_list[:self.max_samples] ] 
             log.debug(f"len(final_list) = {len(final_list)}")

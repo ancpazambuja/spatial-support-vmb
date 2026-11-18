@@ -1,6 +1,22 @@
 
 """@package inference_data.py
 Contains classes related to the data needed for Building process of data and models from persisted files.
+
+STATUS: WORK IN PROGRESS / TODO
+-------------------------------
+This module is an initiated but INCOMPLETE draft. It is NOT part of the
+reproducible pipeline of the paper yet.
+
+Intended purpose:
+    `DeepTomographyFlowDatasets` will hold the data of the complete
+    deep-tomography inference, covering the three iterations of the pipeline
+    (RTM migration + neural network velocity-update inference per iteration).
+
+Known gaps:
+    - `get_input_it_1()`, `get_output_it_1()` and the remaining iteration
+      accessors are not implemented (Ellipsis placeholders).
+
+Do not rely on this module until this notice is removed.
 """
 import numpy as np
 from  glob import glob
@@ -39,10 +55,10 @@ class DeepTomographyFlowDatasets:
         return self.seismic_data
     
     def get_input_it_1(self):
-        return ....
+        return ...  # TODO: not implemented yet
     
     def get_output_it_1(self):
-        return ....
+        return ...  # TODO: not implemented yet
     
     def get_input_it_2(self):
         return self.train_indexes

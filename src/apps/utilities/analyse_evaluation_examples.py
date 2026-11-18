@@ -130,7 +130,7 @@ def keep_desired_architectures(df=None, best=None, worst=None):
     return df_best, df_worst
 
 def get_filtered_df_best_per_kernel(df=None):
-    # 1. Identifica o nome da melhor arquitetura para cada conv_kernel_size
+    # 1. Identifies the name of the best architecture for each conv_kernel_size
     best_archs = (
         df.groupby(['arch_name', 'conv_kernel_size', 'use_transformers'])['mse']
         .mean()
@@ -141,7 +141,7 @@ def get_filtered_df_best_per_kernel(df=None):
     print("-------------------------------")
     print(best_archs)
     print("-------------------------------")
-    # 2. Filtra o DataFrame original mantendo apenas as linhas dessas arquiteturas
+    # 2. Filters the original DataFrame keeping only the rows of those architectures
     return  df[df['arch_name'].isin(best_archs)]
 
 def make_evaluation_report( df=None, mlflow_=None, i_name='arch_name', j_name='seed', title='', author='', dataset='', alpha=0.05, label='', verbose=True):
