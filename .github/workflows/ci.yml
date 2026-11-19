@@ -26,8 +26,8 @@ jobs:
           python-version: "3.11"
           cache: pip
 
-      - name: Install CPU-only torch (kept satisfied by the pinned requirements)
-        run: pip install torch==2.3.0 --index-url https://download.pytorch.org/whl/cpu
+      - name: Install CPU-only torch and torchvision (kept satisfied by the pinned requirements)
+        run: pip install torch==2.3.0 torchvision==0.18.0 --index-url https://download.pytorch.org/whl/cpu
 
       - name: Install package dependencies and test tools
         run: |
@@ -48,8 +48,8 @@ jobs:
           python-version: "3.11"
           cache: pip
 
-      - name: Install CPU-only torch (kept satisfied by the pinned requirements)
-        run: pip install torch==2.3.0 --index-url https://download.pytorch.org/whl/cpu
+      - name: Install CPU-only torch and torchvision (kept satisfied by the pinned requirements)
+        run: pip install torch==2.3.0 torchvision==0.18.0 --index-url https://download.pytorch.org/whl/cpu
 
       - name: Install package dependencies
         run: pip install -r configs/requirements.txt
