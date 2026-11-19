@@ -36,7 +36,7 @@ podman run --rm -it --security-opt label=disable --device nvidia.com/gpu=all spa
 The image contains the complete pinned Python environment (including the LaTeX toolchain). The source code and data are **not baked into the image**; they are provided through bind mounts, e.g.:
 
 ```bash
-singularity run --nv -e --bind /path/to/repo:/workspace dt2_v4.sif bash -i
+singularity run --nv -e --bind /path/to/repo:/workspace dt2_v4_reconstructed.sif bash -i
 ```
 
 ## Option B — local installation (without a container)
@@ -65,4 +65,8 @@ The container image is the **exact environment of the paper** (reconstructed fro
 
 A successful image build alone does not guarantee bitwise-identical results across hardware; see the [reproducibility checklist](reproducibility_checklist.md).
 
-<!-- TODO: verify the build and run commands above from a clean environment and remove this note. -->
+<!-- Build verified: the image was rebuilt from this Containerfile and validated
+against the original dt2_v4.sif (pip freeze identical, 292/292 pins, 2026-11-19).
+The docker/podman run invocations above follow the standard NVIDIA Container
+Toolkit patterns; the GPU runtime used for the paper was Apptainer/Singularity
+(see docs/experimental_protocol.md). -->

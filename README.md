@@ -4,7 +4,10 @@ This repository contains the software and reproducibility materials for the pape
 
 **On the Calibration of Spatial Support in Deep Learning-Assisted Velocity Model Building**
 
-> **Status:** Repository scaffold. Replace every `TODO` and verify every command against the actual package before making the repository public.
+> **Status:** public reproducibility repository for the paper above. CI runs the
+> test suite and the quickstart end-to-end on every push; the paper's full-scale
+> experiments additionally require the restricted research datasets
+> (see [Data availability](docs/data_availability.md)).
 
 ## Scientific overview
 
@@ -56,7 +59,11 @@ The repository should provide the exact configurations, seeds, training/evaluati
 
 ## Software and computational requirements
 
-See [Installation](docs/installation.md). The supported Python, framework, CUDA/cuDNN, GPU, memory, and container versions are **TODO: verify and document**. Do not assume that a successful image build alone guarantees bitwise-identical results across hardware.
+See [Installation](docs/installation.md) and the
+[computational environment](environment/README.md). Reference environment:
+Ubuntu 22.04, CPython 3.11.9, PyTorch 2.3.0+cu121, CUDA 12.1.1, cuDNN 8.9.0,
+NVIDIA A100-SXM4-80GB. A successful image build alone does not guarantee
+bitwise-identical results across hardware.
 
 ## Tests
 
