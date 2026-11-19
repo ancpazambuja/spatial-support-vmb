@@ -123,9 +123,12 @@ RUN apt-get update -o Acquire::Retries=10 && \
 # users. Adjust if building on a dedicated machine.
 
 # --- [2025-04/06] Python environment (292 pinned packages) -------------------
-# Offline install from the pre-downloaded wheel cache (.wheels/, see
-# .download_wheels.sh). This makes the build immune to proxy rate limiting
-# and guarantees the exact pinned artifacts are used.
+# Offline install from the pre-downloaded wheel cache (.wheels/). The cache
+# lives OUTSIDE the repository, at /scr01/ntbs/spatial-support-vmb-wheels on
+# harpia-dev2 (with a SHA256SUMS manifest); copy it into .wheels/ at the
+# repository root before building (see docs/installation.md). This makes the
+# build immune to proxy rate limiting and guarantees the exact pinned
+# artifacts are used.
 COPY .wheels /tmp/wheels
 COPY requirements-frozen.txt /tmp/requirements-frozen.txt
 RUN python -m pip install --no-index --find-links=/tmp/wheels \

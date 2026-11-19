@@ -4,27 +4,33 @@
 
 - Linux x86_64 with an NVIDIA GPU (CUDA 12.1, cuDNN 8) for training and full evaluation.
 - A CPU-only environment is sufficient for the quickstart smoke test.
-- Python 3.10 (this is the version shipped by the container image below).
+- Python 3.11 (the version shipped by the container image below is CPython
+  3.11.9; local installations support 3.10–3.12).
 
 ## Option A — container (recommended)
 
-Build the image from the **repository root** (the build context must be the repo root, not the `configs/` directory):
+Build the image from the **repository root** (the build context must be the repo root, not the `configs/` directory). The offline wheel cache lives **outside the repository** (shared scratch on `harpia-dev2`); copy it into the build context and verify it before building:
 
 ```bash
 cd spatial-support-vmb
-podman build -f configs/Dockerfile -t spatial-support-vmb:1.0.0 .
+
+# Restore the offline wheel cache (4 GB) and verify its integrity:
+rsync -a /scr01/ntbs/spatial-support-vmb-wheels/ .wheels/
+( cd .wheels && sha256sum -c SHA256SUMS --quiet && echo "wheels OK" )
+
+podman build -f configs/Dockerfile -t spatial-support-vmb:0.1.0 .
 # or, with Docker:
-docker build -f configs/Dockerfile -t spatial-support-vmb:1.0.0 .
+docker build -f configs/Dockerfile -t spatial-support-vmb:0.1.0 .
 ```
 
 Run an interactive shell in the container:
 
 ```bash
 # Docker (NVIDIA Container Toolkit required):
-docker run --rm -it --gpus all spatial-support-vmb:1.0.0
+docker run --rm -it --gpus all spatial-support-vmb:0.1.0
 
 # Podman (requires nvidia-container-toolkit / CDI configured):
-podman run --rm -it --security-opt label=disable --device nvidia.com/gpu=all spatial-support-vmb:1.0.0
+podman run --rm -it --security-opt label=disable --device nvidia.com/gpu=all spatial-support-vmb:0.1.0
 ```
 
 The image contains the complete pinned Python environment (including the LaTeX toolchain). The source code and data are **not baked into the image**; they are provided through bind mounts, e.g.:

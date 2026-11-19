@@ -9,8 +9,12 @@ description = "Reproducibility materials for 'On the Calibration of Spatial Supp
 readme = "README.md"
 requires-python = ">=3.10,<3.13"
 license = { text = "MIT" }
-# TODO: fill in author names (keep in sync with CITATION.cff).
-authors = [{ name = "TODO" }]
+# Author names kept in sync with CITATION.cff.
+authors = [
+    { name = "Antonio C. P. Azambuja" },
+    { name = "Alberto Sardinha" },
+    { name = "Ana P. O. Muller" },
+]
 keywords = [
     "seismic",
     "velocity model building",
@@ -54,8 +58,8 @@ dev = [
 
 [project.urls]
 Repository = "https://github.com/ancpazambuja/spatial-support-vmb"
-# TODO: add the Zenodo DOI (or paper DOI) after the release:
-# DOI = "10.5281/zenodo.XXXXXXX"
+# No Zenodo deposit; cite the GitHub repository above.
+# A journal DOI can be added to CITATION.cff after publication.
 
 # NOTE: the source tree lives in src/ and is imported as the package "src"
 # (historical layout of the original research code); implicit namespace

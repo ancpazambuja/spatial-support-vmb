@@ -2,12 +2,20 @@ cff-version: 1.2.0
 message: "If you use this software, please cite the associated research paper."
 title: "On the Calibration of Spatial Support in Deep Learning-Assisted Velocity Model Building"
 type: software
-# TODO: Replace placeholders and validate this file before release.
 authors:
-  - family-names: "TODO"
-    given-names: "TODO"
+  - family-names: Azambuja
+    given-names: Antonio C. P.
+    email: antonio.azambuja@petrobras.com.br
+    affiliation: "Petróleo Brasileiro S.A. (Petrobras)"
+  - family-names: Sardinha
+    given-names: Alberto
+    affiliation: "Pontifícia Universidade Católica do Rio de Janeiro (PUC-Rio)"
+  - family-names: Muller
+    given-names: Ana P. O.
+    affiliation: "Petróleo Brasileiro S.A. (Petrobras)"
 version: 0.1.0
-date-released: "2026-10-19"
+date-released: "2026-11-19"
 repository-code: "https://github.com/ancpazambuja/spatial-support-vmb"
-# Add the paper DOI after publication:
+# No Zenodo deposit; cite the GitHub repository above.
+# A journal DOI can be added here after publication:
 # doi: "TODO"
