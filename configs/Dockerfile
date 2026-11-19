@@ -15,6 +15,11 @@
 #   * `pip freeze` inside the image (292 packages) matches
 #     configs/requirements-frozen.txt exactly.
 #
+# VALIDATION (2026-11-19): the image rebuilt from this Containerfile was
+# compared against the original dt2_v4.sif: pip freeze is IDENTICAL
+# (292/292 package pins, zero differences). The reconstructed SIF is
+# deployed alongside the original as dt2_v4_reconstructed.sif.
+#
 # Not recoverable (documented, functionally irrelevant):
 #   * The 2023-era upstream base image flavor (an NGC license file hints at an
 #     NGC lineage before image_v1.podman). The CUDA apt layers below are
