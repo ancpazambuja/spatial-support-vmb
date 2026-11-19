@@ -40,6 +40,9 @@ results/generated/
 !data/shallower/**
 !data/deeper/**
 
+# Local wheel cache for offline container builds (never committed)
+.wheels/
+
 # Secrets and local configuration
 .env
 .env.*

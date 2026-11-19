@@ -98,6 +98,7 @@ RUN curl -fsSL https://www.python.org/ftp/python/3.11.9/Python-3.11.9.tgz \
                 LDFLAGS=-fno-semantic-interposition && \
     make -j4 && make install && \
     ln -sf /usr/local/python/bin/python3.11 /usr/local/python/bin/python && \
+    ln -sf /usr/local/python/bin/pip3.11 /usr/local/python/bin/pip && \
     rm -rf /usr/local/src/Python-3.11.9 /tmp/Python-3.11.9.tgz
 
 ENV PATH="/usr/local/python/bin:${PATH}"
@@ -117,6 +118,16 @@ RUN apt-get update -o Acquire::Retries=10 && \
 # users. Adjust if building on a dedicated machine.
 
 # --- [2025-04/06] Python environment (292 pinned packages) -------------------
+# Offline install from the pre-downloaded wheel cache (.wheels/, see
+# .download_wheels.sh). This makes the build immune to proxy rate limiting
+# and guarantees the exact pinned artifacts are used.
+COPY .wheels /tmp/wheels
 COPY configs/requirements-frozen.txt /tmp/requirements-frozen.txt
-RUN python -m pip install --upgrade pip==24.0 && \
-    pip install --retries 10 --timeout 60 -r /tmp/requirements-frozen.txt
+RUN python -m pip install --no-index --find-links=/tmp/wheels \
+    --upgrade pip==24.0 && \
+    python -m pip install --no-index --find-links=/tmp/wheels wheel && \
+    python -m pip install --no-index --find-links=/tmp/wheels \
+    --no-build-isolation \
+    -r /tmp/requirements-frozen.txt && \
+    python -m pip uninstall -y wheel && \
+    rm -rf /tmp/wheels /tmp/requirements-frozen.txt
