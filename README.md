@@ -1,5 +1,7 @@
 # On the Calibration of Spatial Support in Deep Learning-Assisted Velocity Model Building
 
+[![CI](https://github.com/ancpazambuja/spatial-support-vmb/actions/workflows/ci.yml/badge.svg)](https://github.com/ancpazambuja/spatial-support-vmb/actions/workflows/ci.yml)
+
 This repository contains the software and reproducibility materials for the paper:
 
 **On the Calibration of Spatial Support in Deep Learning-Assisted Velocity Model Building**
