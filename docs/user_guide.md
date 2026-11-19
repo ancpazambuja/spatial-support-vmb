@@ -30,9 +30,10 @@ Two dataset layouts are supported (selected with `--dataset_type`):
 
 - `inputs1/2/3` are the same scenes at **high/medium/low** input resolution
   (selected with `--dataset_resolution`); `outputs1/2/3` are the
-  corresponding target velocity models.
+  corresponding target velocity updates.
 - Array shapes in the included `shallow` subset: input `(351, 901, 15)`
-  float32 per sample (z, x, channels); models share the spatial shape.
+  float32 per sample (z, x, channels); velocity updates share the spatial
+  shape.
 - The **full research datasets are restricted** — see
   [Data availability](data_availability.md). The included subsets are enough
   for the quickstart and for software validation only.
@@ -68,7 +69,7 @@ All runs are logged to [MLflow](https://mlflow.org). The command line accepts
 | `--dataset_type` | — | `shallow` or `deep` |
 | `--dataset_resolution` | — | `high`, `medium` or `low` |
 | `--dataset_max_samples` | `-1` | Limit the number of samples (`-1` = all) |
-| `--test_perc` | `0.1` | Holdout fraction (scripts in this repo use `0.5`) |
+| `--test_perc` | `0.1` | Holdout fraction (paper's MCCV: 0.1 = 90/10; quickstart uses 0.5) |
 | `--cv` | `5` | Cross-validation folds for the grid search |
 | `--model_arch` | — | `unet` or `transunet` |
 | `--conv_filter_size_x/z` | — | Convolution kernel size (the *spatial support* under study) |
@@ -76,7 +77,7 @@ All runs are logged to [MLflow](https://mlflow.org). The command line accepts
 | `--use_transformers` | — | Transformer self-attention in the latent space (transunet) |
 | `--unembed_type` | — | `none`, `paper` or `linear` |
 | `--max_epochs` | — | Training epochs per grid element |
-| `--seed` | `-1` | Random seed (`-1` = non-deterministic); scripts use `0` |
+| `--seed` | `-1` | Random seed (`-1` = non-deterministic); quickstart uses `0`; the paper's MCCV seeds are 7, 79, 181, 307, 433, 571, 701, 853, 997, 1129 |
 | `--device` | — | `cpu`, `cuda:N` or `cuda:all` (one task per GPU) |
 | `--experiment_tracking_uri/name` | internal server | MLflow destination |
 
@@ -100,15 +101,18 @@ provide the knobs.
    ```bash
    bash examples/quickstart.sh
    ```
-2. **Grid search** (mirrors the original `gs_*.sh` experiments):
+2. **Grid search** (mirrors the original `gs_*.sh` experiments; the paper's
+   HPO stage uses a 300-epoch budget on a 500-example subset):
    ```bash
    # research configuration (GPU, restricted data, MLflow server):
-   DEVICE=cuda:all MAX_EPOCHS=110 FILTER_SIZE=13 MODEL_ARCH=transunet \
+   DEVICE=cuda:all MAX_EPOCHS=300 FILTER_SIZE=13 MODEL_ARCH=transunet \
    TRACKING_URI=http://<server>/ bash scripts/run_grid_search.sh
    ```
-3. **Refit of the best configuration:**
+3. **Refit of the best configuration** (the paper's MCCV stage: 10 resampled
+   runs with seeds 7, 79, 181, 307, 433, 571, 701, 853, 997, 1129; 500-epoch
+   budget, early-stopping patience 300):
    ```bash
-   GS_BEST_RUN_ID=<run-id> DEVICE=cuda:all bash scripts/run_refit.sh
+   GS_BEST_RUN_ID=<run-id> SEED=7 DEVICE=cuda:all bash scripts/run_refit.sh
    ```
 4. **Analysis and report generation** — from MLflow runs to DataFrames,
    figures and LaTeX sections:

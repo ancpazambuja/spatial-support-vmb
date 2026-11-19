@@ -26,7 +26,7 @@ classifiers = [
 # Direct dependencies imported by the source code, pinned to the versions of
 # the environment used for the paper. The complete frozen environment (all
 # transitive packages, as installed in the reference container) is preserved in
-# configs/requirements-frozen.txt.
+# requirements-frozen.txt.
 dependencies = [
     "joblib==1.4.2",
     "matplotlib==3.8.3",

@@ -13,7 +13,7 @@
 #   * `sysconfig.get_config_var('CONFIG_ARGS')` of the baked Python binary
 #     preserved the exact CPython ./configure invocation.
 #   * `pip freeze` inside the image (292 packages) matches
-#     configs/requirements-frozen.txt exactly.
+#     requirements-frozen.txt exactly.
 #
 # VALIDATION (2026-11-19): the image rebuilt from this Containerfile was
 # compared against the original dt2_v4.sif: pip freeze is IDENTICAL
@@ -127,7 +127,7 @@ RUN apt-get update -o Acquire::Retries=10 && \
 # .download_wheels.sh). This makes the build immune to proxy rate limiting
 # and guarantees the exact pinned artifacts are used.
 COPY .wheels /tmp/wheels
-COPY configs/requirements-frozen.txt /tmp/requirements-frozen.txt
+COPY requirements-frozen.txt /tmp/requirements-frozen.txt
 RUN python -m pip install --no-index --find-links=/tmp/wheels \
     --upgrade pip==24.0 && \
     python -m pip install --no-index --find-links=/tmp/wheels wheel && \

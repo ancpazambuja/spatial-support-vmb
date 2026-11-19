@@ -19,7 +19,8 @@ The experiments use two synthetic seismic datasets. Access to the original resea
 ## Repository layout
 
 - `src/`: available original source code. 
-- `configs/`: environment configuration (docker file and requirements).
+- `configs/`: environment configuration (docker file).
+- `requirements.txt` / `requirements-frozen.txt`: Python dependencies (direct, pinned / complete frozen environment).
 - `scripts/`: entry points for training, evaluation, statistical analysis, and figure/table generation.
 - `examples/`: lightweight synthetic smoke test and usage examples.
 - `tests/`: automated tests.

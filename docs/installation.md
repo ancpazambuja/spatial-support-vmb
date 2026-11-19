@@ -52,8 +52,8 @@ pip install -e ".[dev]"
 
 Two files describe the Python environment:
 
-- `configs/requirements.txt` — the **direct dependencies** imported by the source code, pinned to the versions used for the paper. Intended for lightweight local installations.
-- `configs/requirements-frozen.txt` — the **complete frozen environment** (292 packages, from `pip freeze`) of the research container used for the paper. This is what `configs/Dockerfile` installs.
+- `requirements.txt` — the **direct dependencies** imported by the source code, pinned to the versions used for the paper. Intended for lightweight local installations.
+- `requirements-frozen.txt` — the **complete frozen environment** (292 packages, from `pip freeze`) of the research container used for the paper. This is what `configs/Dockerfile` installs.
 
 The container image is the **exact environment of the paper** (reconstructed from the original research image `dt2_v4.sif`; see the provenance header in `configs/Dockerfile`): Ubuntu 22.04, CUDA 12.1.1, cuDNN 8.9.0, CPython 3.11.9, and the frozen package list, including the LaTeX toolchain required by the report-generation stage (`src/pdf/`).
 
