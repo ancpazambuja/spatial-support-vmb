@@ -3,9 +3,8 @@
 
 Expected values are the function's actual output format (``"U-Net k=3 r=1"``
 -- no commas), which is what the paper's tables and MLflow run names use.
-NOTE: the ``__main__`` self-test at the bottom of eval_utils.py contains
-stale expectations (commas, different capitalization) and fails if run
-directly; these pytest tests pin the real behavior instead.
+The standalone self-test ``test_arch_name2arch_name_paper`` in eval_utils.py
+uses the same expectations.
 """
 
 import pytest

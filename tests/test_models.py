@@ -5,15 +5,13 @@ tests check interfaces and shapes, not capacity or accuracy.
 
 NOTE: the apps never build ``UNet`` directly -- both grid search and refit
 construct ``TransUNet`` through ``SkorchTransUNetModelBuilder``, with
-``use_transformers=False`` for the plain U-Net architecture. The legacy
-``UNet`` class has a latent typo (``dilationm=``) that prevents its
-construction; see the expected-failure test below.
+``use_transformers=False`` for the plain U-Net architecture.
 """
 
 import pytest
 import torch
 
-from src.processing.ml_models import TransUNet
+from src.processing.ml_models import UNet, TransUNet
 from src.processing.ml_models_builder import (
     ScoredSkorchModel,
     SkorchGeneralModelBuilder,
@@ -36,15 +34,7 @@ def _plain_unet_module(**kwargs):
     return TransUNet(**defaults)
 
 
-@pytest.mark.xfail(
-    reason="Latent bug: UNet.down_convolution_2 is built with the typo "
-           "keyword 'dilationm=', so the class cannot be constructed. "
-           "The apps build TransUNet(use_transformers=False) instead.",
-    strict=False,
-)
 def test_unet_forward_preserves_spatial_shape():
-    from src.processing.ml_models import UNet
-
     model = UNet(in_channels=1, out_channels=1, n_filters_init=2)
     model.eval()
 

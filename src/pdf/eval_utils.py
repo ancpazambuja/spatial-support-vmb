@@ -1239,8 +1239,8 @@ class EvaluationMatrix:
 
 
 def test_arch_name2arch_name_paper():
-    # Casos de teste: (use_transformer, conv_kernel_size, conv_dilation_size,
-    #                  transposed_conv_kernel_size, optimizer)
+    # Test cases: (use_transformer, conv_kernel_size, conv_dilation_size,
+    #              transposed_conv_kernel_size, optimizer)
     test_cases = [
         ("False", 3, 1, 2, "Adam"),
         ("False", 5, 2, 2, "AdamW"),
@@ -1279,9 +1279,9 @@ def test_arch_name2arch_name_paper():
 
     # 4) Tests of explicit literal values (do not depend on get_model_name)
     literal_cases = [
-        ("unet.cks_3x3.cds_1x1.tcks_2x2.opt_Adam",   "U-Net, k=3, r=1"),
-        ("unet.cks_5x5.cds_2x2.tcks_2x2.opt_AdamW",  "U-Net, k=5, r=2"),
-        ("transunet.cks_7x7.cds_4x4.tcks_4x4.opt_Adam", "TransUnet, k=7, r=4"),
+        ("unet.cks_3x3.cds_1x1.tcks_2x2.opt_Adam",   "U-Net k=3 r=1"),
+        ("unet.cks_5x5.cds_2x2.tcks_2x2.opt_AdamW",  "U-Net k=5 r=2"),
+        ("transunet.cks_7x7.cds_4x4.tcks_4x4.opt_Adam", "TransUNet k=7 r=4"),
     ]
     for arch_name, expected in literal_cases:
         actual = EvalUtils.arch_name2arch_name_paper(arch_name)

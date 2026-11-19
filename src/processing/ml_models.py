@@ -211,7 +211,7 @@ class UNet(ModelBase):
         self.down_convolution_1 = self._double_convolution(self.in_channels, nf*1, kernel_size=self.conv_kernel_size, dilation=self.conv_dilation_size)
         self.down_dropout_1 = nn.Dropout(dropout)
 
-        self.down_convolution_2 = self._double_convolution(nf*1, nf*2, kernel_size=self.conv_kernel_size, dilationm=self.conv_dilation_size)
+        self.down_convolution_2 = self._double_convolution(nf*1, nf*2, kernel_size=self.conv_kernel_size, dilation=self.conv_dilation_size)
         self.down_dropout_2 = nn.Dropout(dropout)
 
         self.down_convolution_3 = self._double_convolution(nf*2, nf*4, kernel_size=self.conv_kernel_size, dilation=self.conv_dilation_size)

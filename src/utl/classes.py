@@ -896,7 +896,7 @@ class BuildDirectories(Base):
             elif self.basedir == BuildDirectories.DIR_SHALLOWER_DATA:
                 self.data = "shallow" 
             else:
-                raise ValueError(f"Parameter 'data_dir' must assume the following values: \n{BuildDirectories.DIR_DEEPER_DATA} \nand \n{BuildDirectories.DIR_SHALLOWER_DATA}. \nActual value: {self.data_dir}")
+                raise ValueError(f"Parameter 'data_dir' must assume the following values: \n{BuildDirectories.DIR_DEEPER_DATA} \nand \n{BuildDirectories.DIR_SHALLOWER_DATA}. \nActual value: {self.basedir}")
 
         if self.data == "deep": 
             d = self.buildDirsForNewerData()

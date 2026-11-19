@@ -52,9 +52,5 @@ class TestBuildDirectories:
             BuildDirectories(data="marmousi", basedir="./data/").build()
 
     def test_unknown_basedir_without_data_type_raises_value_error(self):
-        # NOTE: the intended ValueError message references the
-        # non-existent attribute ``self.data_dir``, so the error path
-        # currently raises AttributeError first. Both are accepted here
-        # until the message is fixed (latent bug in src/utl/classes.py).
-        with pytest.raises((ValueError, AttributeError)):
+        with pytest.raises(ValueError, match="'data_dir'"):
             BuildDirectories(data=None, basedir="/not/a/gemini/path/").build()
