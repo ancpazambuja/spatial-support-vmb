@@ -1,0 +1,58 @@
+# Continuous integration for the spatial-support-vmb reproducibility package.
+#
+# Unit tests run on CPU with the package's pinned dependencies (torch is
+# installed first from the PyTorch CPU index to keep the download small).
+# The integration job runs examples/quickstart.sh end-to-end (data loading
+# -> preprocessing -> grid search training -> MLflow local tracking) on the
+# quickstart data subset committed to the repository.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install CPU-only torch (kept satisfied by the pinned requirements)
+        run: pip install torch==2.3.0 --index-url https://download.pytorch.org/whl/cpu
+
+      - name: Install package dependencies and test tools
+        run: |
+          pip install pytest pytest-cov
+          pip install -r configs/requirements.txt
+
+      - name: Run test suite
+        run: pytest -v --cov=src --cov-report=term-missing
+
+  quickstart-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install CPU-only torch (kept satisfied by the pinned requirements)
+        run: pip install torch==2.3.0 --index-url https://download.pytorch.org/whl/cpu
+
+      - name: Install package dependencies
+        run: pip install -r configs/requirements.txt
+
+      - name: Run quickstart end-to-end (CPU, tiny data subset)
+        run: bash examples/quickstart.sh
