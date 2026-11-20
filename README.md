@@ -11,6 +11,17 @@ This repository contains the software and reproducibility materials for the pape
 > experiments additionally require the restricted research datasets
 > (see [Data availability](docs/data_availability.md)).
 
+## Authorship and AI-assistance statement
+
+> **All scientific source code in this repository — the neural-network
+> architectures, training and evaluation pipelines, and experiment
+> configurations — was written by the authors.** The repository documentation
+> (this README, the `docs/` guides, and `CITATION.cff`) and the automation
+> assets (CI workflows, helper scripts, and the test suite) were produced with
+> the assistance of generative-AI tooling and reviewed by the authors.
+> Code comments in `src/` were translated to English with AI assistance; the
+> code logic is unchanged.
+
 ## Scientific overview
 
 The study compares spatial-information aggregation mechanisms for velocity-update prediction in deep learning-assisted seismic velocity model building:
