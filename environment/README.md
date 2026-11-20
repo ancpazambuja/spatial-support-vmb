@@ -26,9 +26,9 @@ provenance header in `configs/Dockerfile`.
 ## Storage
 
 - Container image: ~9.1 GB (Apptainer SIF).
-- Offline wheel cache: ~4 GB at `/scr01/ntbs/spatial-support-vmb-wheels`
-  (harpia-dev2), with a `SHA256SUMS` manifest — see
-  [Installation](../docs/installation.md) for the restore-and-verify step.
+- Offline wheel cache: ~4 GB, stored **outside the repository** with a
+  `SHA256SUMS` manifest — see [Installation](../docs/installation.md) for the
+  restore-and-verify step.
 
 ## Reproducibility caveats
 

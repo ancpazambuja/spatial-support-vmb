@@ -132,8 +132,8 @@ DEVICE=cuda:all MAX_EPOCHS=300 FILTER_SIZE=13 MODEL_ARCH=transunet \
   292/292 packages**). Build and convert:
 
   ```bash
-  # restore the offline wheel cache (4 GB, shared scratch on harpia-dev2):
-  rsync -a /scr01/ntbs/spatial-support-vmb-wheels/ .wheels/
+  # restore the offline wheel cache (~4 GB, stored outside the repository):
+  rsync -a <wheel-cache-dir>/ .wheels/
   ( cd .wheels && sha256sum -c SHA256SUMS --quiet )
 
   podman build -f configs/Dockerfile -t dt2_v4_reconstructed .

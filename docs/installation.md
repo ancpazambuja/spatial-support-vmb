@@ -9,13 +9,13 @@
 
 ## Option A — container (recommended)
 
-Build the image from the **repository root** (the build context must be the repo root, not the `configs/` directory). The offline wheel cache lives **outside the repository** (shared scratch on `harpia-dev2`); copy it into the build context and verify it before building:
+Build the image from the **repository root** (the build context must be the repo root, not the `configs/` directory). The offline wheel cache lives **outside the repository** (a shared scratch area or external drive — wherever it is durable at your site); copy it into the build context and verify it before building:
 
 ```bash
 cd spatial-support-vmb
 
 # Restore the offline wheel cache (4 GB) and verify its integrity:
-rsync -a /scr01/ntbs/spatial-support-vmb-wheels/ .wheels/
+rsync -a <wheel-cache-dir>/ .wheels/
 ( cd .wheels && sha256sum -c SHA256SUMS --quiet && echo "wheels OK" )
 
 podman build -f configs/Dockerfile -t spatial-support-vmb:0.1.0 .
