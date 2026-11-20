@@ -25,8 +25,8 @@ Two dataset layouts are supported (selected with `--dataset_type`):
 
 | `--dataset_type` | Layout (original dataset) | Included subset |
 |---|---|---|
-| `shallow` | `<data>/DadosRede/inputs{1,2,3}_*.npy` + `outputs{1,2,3}_*.npy` | `data/shallower/` (subset of the *S2* dataset) |
-| `deep` | `<data>/input_suave{,2,3}_*.npy`, `model_suave{,2,3}_*.npy`, `mask_agua_*.npy` | `data/deeper/` (subset of *D_deep*) |
+| `shallow` | `<data>/DadosRede/inputs{1,2,3}_*.npy` + `outputs{1,2,3}_*.npy` | `data/shallower/` (subset of 𝒟<sub>s2</sub>) |
+| `deep` | `<data>/input_suave{,2,3}_*.npy`, `model_suave{,2,3}_*.npy`, `mask_agua_*.npy` | `data/deeper/` (subset of 𝒟<sub>deep</sub>) |
 
 - `inputs1/2/3` are the same scenes at **high/medium/low** input resolution
   (selected with `--dataset_resolution`); `outputs1/2/3` are the

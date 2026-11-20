@@ -30,16 +30,16 @@ comparison isolates the spatial-support mechanism.
 Two synthetic datasets of supervised pairs (migrated subsurface-offset
 gathers X → velocity update Y = Δv), each with N = 1000 examples:
 
-| Name | Origin | Included subset |
+| Dataset | Origin | Included subset |
 |---|---|---|
-| *shallower* (𝒟s2 in the paper) | introduced in Muller et al. (2023), "Deep-tomography: Iterative Velocity Model Building with Deep Learning"; Marmousi-like geology, 9 km × 3.5 km domain | `data/shallower/` |
-| *deeper* (𝒟deep) | same number of examples, similar horizontal extent, nearly twice the depth | `data/deeper/` |
+| 𝒟<sub>s2</sub> (the *shallower* dataset) | introduced in Muller et al. (2023), "Deep-tomography: Iterative Velocity Model Building with Deep Learning"; Marmousi-like geology, 9 km × 3.5 km domain | `data/shallower/` |
+| 𝒟<sub>deep</sub> (the *deeper* dataset) | same number of examples, similar horizontal extent, nearly twice the depth | `data/deeper/` |
 
 Acquisition (both datasets): 20 Hz Ricker wavelet; 225 shots; 701 surface
 receivers at 10 m spacing; maximum offset 3.5 km; 3.5 s recordings at 4 ms
 sampling. For each velocity model, RTM generates **15 common
 subsurface-offset gather panels** that serve as the input channels (X shape
-`(351, 901, 15)` in the included *shallower* subset). Inputs are clipped at
+`(351, 901, 15)` in the included 𝒟<sub>s2</sub> subset). Inputs are clipped at
 the 96th percentile and normalized prior to training; targets are converted
 from m/s to km/s. The **full** datasets are restricted; access is described
 in [Data availability](data_availability.md).

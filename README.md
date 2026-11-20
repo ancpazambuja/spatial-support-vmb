@@ -58,7 +58,7 @@ The quickstart is intended to run without access to the restricted research data
 bash examples/quickstart.sh
 ```
 
-The quickstart runs a miniature grid search (U-Net, 1 epoch, 5 samples, CPU) on the data subset included in `data/shallower/`, logging to a local file-based MLflow store. It completes in a few minutes and requires no GPU and no server.
+The quickstart runs a miniature grid search (U-Net, 1 epoch, 5 samples, CPU) on the `data/shallower/` subset of 𝒟<sub>s2</sub> included in the repository, logging to a local file-based MLflow store. It completes in a few minutes and requires no GPU and no server.
 
 ## Full research reproduction
 
