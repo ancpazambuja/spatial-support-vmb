@@ -113,23 +113,48 @@ class MLFlow(ET_API):
 
     def get_all_refit_runs(self, filter_substring='', experiment_ids=None):
         client = self.create_client()
-        filter_string="attributes.run_name ILIKE 'REFIT_%" + filter_substring + "%'"
+        # NOTE: the SQL-backed MLflow server used for the paper treats '\_' in
+        # a LIKE pattern as an escaped (literal) underscore. File-based
+        # (SQLite) stores do not support backslash escapes: there '\_UNET'
+        # matches nothing (literal backslash) and a bare '_UNET' acts as a
+        # wildcard that also matches '_TRANSUNET'. To keep the same semantics
+        # on every backend, the SQL query is made broad (escapes removed, so
+        # it is a superset on every dialect) and the pattern segments are
+        # re-checked here as literal substrings.
+        sql_substring = filter_substring.replace('\\', '')
+        filter_string="attributes.run_name ILIKE 'REFIT_%" + sql_substring + "%'"
         if experiment_ids is None:
             runs = client.search_runs(self.experiment_id, filter_string=filter_string)
         else:
             runs = client.search_runs(experiment_ids, filter_string=filter_string)
 
+        required_segments = [
+            segment.replace('\\', '')
+            for segment in filter_substring.split('%') if segment
+        ]
         results = dict()
         for r in runs:
-            results[r.info.run_name] = r
+            name = r.info.run_name
+            if all(segment in name for segment in required_segments):
+                results[name] = r
         return results
 
     def get_all_gs_runs(self, filter_substring=''):
         client = self.create_client()
-        filter_string="attributes.run_name ILIKE 'GS_%" + filter_substring + "%'"
+        # See the note in get_all_refit_runs: LIKE patterns with '\_' are only
+        # escaped on SQL-backed servers; the SQL query is broadened and the
+        # segments re-checked client-side so file-based stores behave the same.
+        sql_substring = filter_substring.replace('\\', '')
+        filter_string="attributes.run_name ILIKE 'GS_%" + sql_substring + "%'"
         runs = client.search_runs(self.experiment_id, filter_string=filter_string)
+        required_segments = [
+            segment.replace('\\', '')
+            for segment in filter_substring.split('%') if segment
+        ]
         results = dict()
         for r in runs:
+            if not all(segment in r.info.run_name for segment in required_segments):
+                continue
             d = dict()
             d["run_obj"] = r
             filter_string=f"tags.`mlflow.parentRunId` = '{r.info.run_id}'"

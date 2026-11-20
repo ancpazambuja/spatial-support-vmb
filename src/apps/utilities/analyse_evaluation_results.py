@@ -279,12 +279,15 @@ def drop_duplicates(df=None, keep='first', debug=False ):
 #    return df_clean
 
 def filter_df_optimizer(df, to_pass='Adam'):
-    # The regex searches exactly for: dot + the desired name + single quote
-    # Example for 'Adam': \.Adam'
-    # This implementation relies on the expectation that the names have this format:
-    # <class 'torch.optim.adamw.AdamW'>
-    regex_pattern = rf"\.{to_pass}'"
-    
+    # NOTE: the pattern that works here depends on the format actually logged
+    # in the 'optimizer' param of the target MLflow runs, which has varied
+    # across experiment campaigns (e.g. "<class 'torch.optim.adam.Adam'>",
+    # "<class 'torch.optim.adamw.AdamW'>", other str() forms). The word-
+    # boundary version below matches the class-repr formats; VERIFY against
+    # your own store before trusting the adam/adamw split.
+    # The original paper-era pattern was: rf"\.{to_pass}'"
+    regex_pattern = rf"\.{to_pass}\b"
+
     filtro = df['optimizer'].str.contains(regex_pattern, regex=True)
     return df[filtro].copy()
 
@@ -858,9 +861,15 @@ reports = {
 }
 
 for k,v in reports.items():
-    log.info(f"Making {k} report!")
-
     df = v['df']
+
+    # Skip tables with no rows: per-dataset invocations legitimately produce
+    # empty branches (e.g. a shallow-only execution has no deep runs).
+    if df is None or len(df) == 0:
+        log.warn(f"Skipping {k} report: no runs available for this table.")
+        continue
+
+    log.info(f"Making {k} report!")
 
     data_type = df["data_type"].unique()
     #assert len(data_type) == 1, f"[ INTERNAL ERROR ] Must be only one data type in df at this point."
